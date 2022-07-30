@@ -1,0 +1,39 @@
+{
+  "name": "frontend_assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "gulp watch",
+    "dev": "npm-run-all scss start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Effie13/MovieRama-FrontEnd.git"
+  },
+  "author": "Effie Pitaouli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Effie13/MovieRama-FrontEnd/issues"
+  },
+  "homepage": "https://github.com/Effie13/MovieRama-FrontEnd#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.8",
+    "del": "^7.0.0",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-dependents": "^1.2.5",
+    "gulp-postcss": "^9.0.1",
+    "gulp-sass": "^5.1.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "node-sass": "^7.0.1",
+    "npm-run-all": "^4.1.5",
+    "postcss-sort-media-queries": "^4.2.1"
+  }
+}
