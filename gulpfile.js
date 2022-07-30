@@ -10,8 +10,6 @@ const sourcemaps = require('gulp-sourcemaps');
 const dependents = require('gulp-dependents');
 const cleanCSS = require('gulp-clean-css');
 
-//const del = require('del');
-
 const dest = './styles/'
 const files = {
 	scssPath: [
@@ -30,12 +28,6 @@ gulp.task('styles', () => {
         .pipe(cleanCSS())
         .pipe(gulp.dest(dest));
 });
-
-// gulp.task('clean', () => {
-//     return del([
-//         'styles/style.css',
-//     ]);
-// });
 
 gulp.task('watch', () => {
     gulp.watch(files.scssPath, gulp.series('styles'));
