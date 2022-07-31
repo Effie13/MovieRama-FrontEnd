@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <script src="./src/js/scripts.js" defer></script>
+    <script src="./src/js/loadmovies.js" defer></script>
+    <meta charset="UTF-8">
+    <title>MovieRama Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MovieRama...">
+    <link rel="shortcut icon" href="images/logo.ico" />
+    <link rel="stylesheet" href="./src/styles/style.css" media="all" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="wrapper flex">
+            <h1 title="MovieRama"><img alt="Movie icon" src="./src/assets/video-player.png"><span>MovieRama</span></h1>
+            <div class="js-search">
+                <input class="js-search-input" type="text" placeholder="Looking for another movie?" />
+            </div>
+        </div>
+    </header>
+    <main>
+        <!-- TO DO: Add animation when items-wrapper changes-->
+        <div class="wrapper loader-wrapper loading items-wrapper active">
+            <div class="items-title">
+                <h2>Now Playing</h2>
+            </div>
+            <div class="items-list with-background flex js-now-playing">
+
+            </div>
+            <div class="loader">
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+            </div>
+        </div>
+        <div class="wrapper loader-wrapper loading">
+            <div class="items-list flex">
+
+            </div>
+            <div class="loader">
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+            </div>
+        </div>
+        <!-- Decorative element -->
+        <div class="fixed-gradient" aria-hidden="true">
+            <span class="block animated"></span>
+            <span class="block animated"></span>
+            <span class="block animated"></span>
+        </div>
+    </main>
+    <footer>
+    </footer>
+    </body>
+</html>

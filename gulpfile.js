@@ -2,7 +2,7 @@
 
 const gulp = require('gulp');
 
-const sass = require('gulp-sass')(require('node-sass'));
+const sass = require('gulp-sass')(require('sass'));
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const sortMediaQueries = require('postcss-sort-media-queries');
@@ -10,10 +10,12 @@ const sourcemaps = require('gulp-sourcemaps');
 const dependents = require('gulp-dependents');
 const cleanCSS = require('gulp-clean-css');
 
-const dest = './styles/'
+const dest = './src/styles/'
 const files = {
 	scssPath: [
 		dest + 'settings/*.scss',
+        dest + 'components/*.scss',
+        dest + 'pages/*.scss',
 		dest + '*.scss']
 }
 
