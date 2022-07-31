@@ -30,4 +30,8 @@
             margin-right: calc( 2 * var(--padding));
         }
     }
+
+    &-wrapper {
+        max-width: calc( 100% - (20 * var(--padding)));
+    }
 }
