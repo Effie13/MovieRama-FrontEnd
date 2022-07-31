@@ -30,6 +30,7 @@
 }
 
 .item {
+    font-family: 'Raleway', sans-serif;
     width: 25%;
     cursor: pointer;
     padding: var(--padding);
@@ -37,5 +38,72 @@
 
     &:hover{
 
+    }
+
+    h3 {
+        margin-top: calc( 2 * var(--padding));
+    }
+
+    &-imgWrapper {
+        overflow: hidden;
+        padding: var(--padding);
+        border: solid 1px white;
+    }
+
+    &.expanded {
+        overflow: visible;
+    }
+
+    &-additional {
+        width: 100%;
+        width: 100%;
+        background: white;
+        z-index: 3;
+        left: 0;
+        display: none;
+
+        .expanded & {
+            overflow: hidden;
+            height: 300px;
+            display: block;
+        }
+
+        iframe {
+            width: 400px;
+            order: 2;
+        }
+    }
+
+    &-description {
+        flex-basis: 100%;
+        margin-bottom: calc(2 * var(--padding));
+    }
+
+    &-reviews {
+        order: 3;
+        width: calc(100% - 400px - (2 * var(--padding)));
+    }
+}
+
+.animation-wrapper {
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.animated-circle {
+   margin-left: calc( 2 * var(--padding));
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.review {
+    &-content {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 75ch;
     }
 }
