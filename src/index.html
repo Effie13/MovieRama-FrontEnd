@@ -39,15 +39,20 @@
                 Please enable JavaScript in your browser to use this website
             </noscript>
             <div class="items-list with-background flex js-now-playing"></div>
-            <div class="loader">
+            <!-- <div class="loader">
                 <span class="block"></span>
                 <span class="block"></span>
                 <span class="block"></span>
                 <span class="block"></span>
-            </div>
+            </div> -->
         </div>
-        <div class="wrapper loader-wrapper loading">
-            <div class="items-list flex">
+        <div class="loader-wrapper loading search-wrapper animated">
+            <div class="wrapper">
+                <div class="js-search-info relative">
+                <div>Results for: <span class="js-value"></span></div>
+                <button class="js-search-close absolute"></button>
+            </div>
+            <div class="items-list flex js-search-list">
 
             </div>
             <div class="loader">
@@ -56,6 +61,8 @@
                 <span class="block"></span>
                 <span class="block"></span>
             </div>
+            </div>
+            
         </div>
         <!-- Decorative element -->
         <div class="fixed-gradient" aria-hidden="true">

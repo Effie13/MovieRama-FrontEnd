@@ -58,7 +58,7 @@ class NowPlaying {
             fetch(request)
                 .then((response) => response.json())
                 .then((response) => {
-                    this.genresArray = response.genres;
+                    this.genresArray = genresArray = response.genres;
                     resolve(true);
                 })
                 .catch((error) => {
@@ -116,12 +116,13 @@ class NowPlaying {
                 if (this.totalPages > 1 && !this.hasScroll) {
                     // Inititate Infinite Scrolling
                     this.scrollObserver = new ScrollObserver(this.wrapper);
+                    this.hasScroll=true;
                 } else if (this.hasScroll) {
                     this.scrollObserver.updateTrigger();
                 }
 
-                if (this.totalPages == this.page && this.hasScroll) {
-                    this.scrollObserver.unobserve();
+                if (this.totalPages === this.page && this.hasScroll) {
+                    this.scrollObserver.remove();
                 }
             })
             .catch((error) => {

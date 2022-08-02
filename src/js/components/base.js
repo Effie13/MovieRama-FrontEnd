@@ -2,6 +2,7 @@ const API_KEY = '?api_key=15d382b5ad53d6b7c9569e8b85954ffa';
 const API_PATH = 'https://api.themoviedb.org/3/';
 const body = document.body;
 let mobile = false;
+let genresArray = undefined;
 
 // Add basic functionality to make the website more accessible and respect the user's preferences in design
 // I plan on using these css classes in the next stages of developmen, after having finished the JS functionality requirements 
@@ -12,8 +13,8 @@ window.onload = () => {
 
     // I may use this if I have time to handle bugs or orientation change events after the initial build and requirements are fullfilled
     if (window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches) {
-        body.classList.add('mobile'); 
-        mobile = true; 
+        body.classList.add('mobile');
+        mobile = true;
     }
 };
 
@@ -28,3 +29,22 @@ trigger.addEventListener('click', (e) => {
 infoContent.addEventListener('click', e => e.stopPropagation());
 
 body.addEventListener('click', _ => infoContent.classList.remove('visible'));
+
+// Global debounce function
+
+function debounce(callback, interval) {
+    let debounceTimeoutId;
+
+    return function (e) {
+        clearTimeout(debounceTimeoutId);
+        debounceTimeoutId = setTimeout(() => callback, interval);
+    };
+}
+
+// Compute Screen height 
+
+const computeHeight = !(() => {
+    body.style.setProperty('--screenHeight', window.innerHeight + 'px');
+})();
+
+window.addEventListener('resize', debounce(computeHeight, 300));
