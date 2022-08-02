@@ -2,8 +2,10 @@
     &-results-info {
         flex-basis: 100%;
         color: rgba(255, 255, 255, 0.9);
-        font-weight: 300;
-        margin: var(--padding) 0;
+        font-weight: 400;
+        margin-bottom: calc(2 * var(--padding));
+        padding-left: var(--padding);
+        font-size: 16px;
     }
 
     &-list.with-background {
@@ -26,6 +28,18 @@
 
     &-wrapper {
         margin-top: calc( 4 * var(--padding));
+
+        body:not(.mobile) & {
+            --contentHeight: 400px;
+        }
+
+        body.mobile & {
+            --contentHeight: 600px;
+        }
+    }
+
+    &-title {
+        padding-left: var(--padding);
     }
 }
 
@@ -36,46 +50,144 @@
     padding: var(--padding);
     color: white !important;
 
-    &:hover{
-
-    }
-
-    h3 {
-        margin-top: calc( 2 * var(--padding));
-    }
-
     &-imgWrapper {
         overflow: hidden;
-        padding: var(--padding);
-        border: solid 1px white;
+        padding-top: calc(1440/960 * 100%);
+        position: relative;
+
+        img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            object-fit: cover;
+        }
+    }
+    
+    .relative:after {
+        content: '';
+        width: 0; 
+        height: 0; 
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid rgba(255, 255, 255, 0.6);
+        position: absolute;
+        left: calc(50% - 10px);
+        transform: translate3d(0, 10px, 0);
+        margin-top: calc( 2 * var(--padding) - 2px);
+        opacity: 0;
     }
 
     &.expanded {
         overflow: visible;
+
+        .relative:after {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+            transition: transform 0.3s ease-out 0.6s;
+        }
+    }
+
+    &-dummy {
+        transition: max-height 0.3s linear;
+    }
+
+    h3, &-details div {
+        color: black;
+    }
+
+    h3 {
+        font-family: 'Oswald', sans-serif;
+        font-size: 24px;
+        font-weight: 600;
+        padding-bottom: calc(2 * var(--padding));
+        border-bottom: solid 2px var(--main-color);
+        margin-bottom: calc(2 * var(--padding));
+    }
+
+    &-details {
+        font-weight: 600;
+        font-size: 18px;
+    }
+
+    &-content {
+        z-index: 1;
+        opacity: 0;
+        transform: scale(0.4);
+        width: calc(100% - (4 * var(--padding)));
+        height: calc(100% - (4 * var(--padding)));
+        top: calc( 2 * var(--padding));
+        left: calc( 2 * var(--padding));
+        transition-delay: 0.3s;
+        overflow: hidden;
+        justify-content: center;
+        padding: calc( 2 * var(--padding) );
+
+        &:before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.65);
+            z-index: -2;
+        }
+
+        * {
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+
+        .item .relative:hover & {
+            opacity: 1;
+            transform: scale(1);
+            transition-delay: 0s;
+
+            * {
+                opacity: 1;
+                transition-delay: 0.3s;
+            }
+        }
     }
 
     &-additional {
         width: 100%;
         width: 100%;
-        background: white;
         z-index: 3;
         left: 0;
-        display: none;
+        visibility: hidden;
+        opacity: 0;
+        height: calc(var(--contentHeight) - ( 4 * var(--padding)));
+        margin: calc(3 * var(--padding)) var(--padding) 0 var(--padding);
+        background: rgba(255, 255, 255, 1);
+        padding: calc( 2 * var(--padding));
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.5;
+        cursor: default;
 
         .expanded & {
-            overflow: hidden;
-            height: 300px;
-            display: block;
+            //overflow: hidden;
+            visibility: visible;
+            opacity: 1;
+            transition: all 0.6s ease-out;
+            transition-delay: 20ms;
         }
 
         iframe {
             width: 400px;
             order: 2;
         }
+
+        a, p {
+            color: var(--background-color);
+        }
     }
 
     &-description {
-        flex-basis: 100%;
+        flex-basis: 700px;
         margin-bottom: calc(2 * var(--padding));
     }
 
@@ -85,25 +197,92 @@
     }
 }
 
+body:not(.mobile) {
+    .item-dummy:nth-child(6n + 1) {
+        flex-basis: 100%;
+        height: var(--contentHeight);
+        max-height: 0;
+    }
+
+    .item.expanded + .item-dummy:nth-child(6n + 1), 
+    .item.expanded + .item + .item-dummy:nth-child(6n + 1), 
+    .item.expanded + .item + .item-dummy + .item + .item + .item-dummy:nth-child(6n + 1), 
+    .item.expanded + .item-dummy + .item + .item + .item-dummy:nth-child(6n + 1) {
+        max-height: var(--contentHeight);
+    }
+}
+
 .animation-wrapper {
     justify-content: flex-start;
     align-items: center;
 }
 
 .animated-circle {
-   margin-left: calc( 2 * var(--padding));
-   width: 40px;
-   height: 40px;
-   border-radius: 50%;
-   display: flex;
-   justify-content: center;
-   align-items: center;
+    margin-left: calc( 2 * var(--padding));
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: block;
+    border-radius: 100%;
+    position: relative;
+
+    span {
+        left: 50%;
+        top: 50%;
+        transform: translate3d(-50%, -50%, 0);
+    }
+
+    #svg circle {
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1s linear;
+        stroke: rgba(0,0,0,0.25);
+        stroke-width: 5px;
+    }
+
+    #svg #bar {
+        stroke: var(--background-color);
+    }
+
+    .item:hover & {
+        #svg #bar {
+            stroke-dashoffset: var(--percentage);
+        }
+    }
 }
 
 .review {
+    width: 45%;
+
     &-content {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 75ch;
+        max-height: 120px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-color: rgba(0,0,0,0.6) rgba(0,0,0,0.15);
+        scrollbar-width: thin;
+
+        &::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0, 0.6);
+            border-radius: 5px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.15);
+        }
     }
+
+    &-author {
+        margin-bottom: var(--padding);
+        color: var(--background-color);
+        font-family: 'Oswald', sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+    }
+}
+
+.scroll-trigger {
+    flex-basis: 100%;
 }

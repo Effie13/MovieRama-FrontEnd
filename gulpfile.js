@@ -11,6 +11,8 @@ const dependents = require('gulp-dependents');
 const cleanCSS = require('gulp-clean-css');
 const concat = require('gulp-concat');
 const rename = require('gulp-rename');
+// TO DO: 
+// Use uglify after project is completed
 const uglify = require('gulp-uglify');
 
 const dest = './src/styles/'
@@ -26,7 +28,8 @@ gulp.task('styles', () => {
     return gulp.src(dest + '*.scss')
         //.pipe(sourcemaps.init())
         .pipe(dependents())
-        .pipe(sass({ outputStyle: 'compressed'}).on('error', sass.logError))
+        //{ outputStyle: 'compressed'}
+        .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer(), sortMediaQueries({
             sort: 'mobile-first'
         })]))

@@ -226,6 +226,11 @@ section, %section, .section {
   flex-direction: row-reverse;
 }
 
+.flex-column {
+  @extend %flex;
+  flex-direction: column;
+}
+
 .pointer {
   cursor: pointer;
 }

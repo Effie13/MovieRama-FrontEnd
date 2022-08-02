@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en-US">
+
 <head>
     <script src="./src/js/scripts.min.js" defer></script>
-    <!-- <script src="./src/js/loadmovies.js" defer></script> -->
+    <noscript>
+        Your browser does not support JavaScript!
+     </noscript>
     <meta charset="UTF-8">
     <title>MovieRama Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,26 +14,31 @@
     <link rel="stylesheet" href="./src/styles/style.css" media="all" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600&family=Raleway:wght@200;300&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600&family=Raleway:wght@200;300;400;500;600&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <header class="header">
         <div class="wrapper header-wrapper flex">
-            <h1 title="MovieRama"><img alt="Movie icon" src="./src/assets/video-player.png"><span>MovieRama</span></h1>
+            <h1 title="MovieRama"><img alt="Movie icon" src="./src/assets/movie.png"><span>MovieRama</span></h1>
             <div class="js-search">
                 <input class="js-search-input" type="text" placeholder="Looking for another movie?" />
             </div>
         </div>
     </header>
     <main>
+        <img src="" class="decor-img lazy-load" alt="" aria-hidden="true">
         <!-- TO DO: Add animation when items-wrapper changes-->
         <div class="wrapper loader-wrapper loading items-wrapper active">
             <div class="items-title">
                 <h2>Now Playing</h2>
             </div>
-            <div class="items-list with-background flex js-now-playing">
-
-            </div>
+            <noscript>
+                Please enable JavaScript in your browser to use this website
+            </noscript>
+            <div class="items-list with-background flex js-now-playing"></div>
             <div class="loader">
                 <span class="block"></span>
                 <span class="block"></span>
@@ -56,7 +64,25 @@
             <span class="block animated"></span>
         </div>
     </main>
-    <footer>
+    <footer class="footer">
+        <button class="js-info-trigger" style="background: url(./src/assets/info.svg) center center transparent;">Show
+            details</button>
+        <div class="js-info-content rounded absolute smooth-medium">
+            <h5 class="flex-column">
+                <span>Effie Pitaouli</span>
+                <small>Front End Developer</small>
+            </h5>
+            <hr>
+            <div class="info-details">
+                <div>
+                    Email: <a href="mailto:efipit.96@gmail.com">efipit.96@gmail.com</a>
+                </div>
+                <div>
+                    Tel: <a href="tel:306940969283">694 096 9283</a>
+                </div>
+            </div>
+        </div>
     </footer>
-    </body>
+</body>
+
 </html>

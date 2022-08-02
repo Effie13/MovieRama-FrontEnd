@@ -12,6 +12,7 @@ main {
 
 .wrapper {
     max-width: 1460px;
+    width: calc(100% - (2 * var(--padding)));
 
     main & {
         z-index: 1;
@@ -97,5 +98,40 @@ main {
             left: 70%;
             background-color: blueviolet;
         }
+    }
+}
+
+/* Typography */
+
+h2 {
+    font-size: 32px;
+    margin-bottom: calc(2 * var(--padding));
+}
+
+h4 {
+    font-size: 28px;
+    margin-bottom: var(--padding);
+}
+
+h5 {
+    font-size: 18px;
+}
+
+// Decorative Image
+
+.decor-img {
+    position: fixed;
+    width: 50vw;
+    top: 0;
+    left: -10vw;
+    mask: url(./../assets/blur-mask.png); 
+}
+
+img.lazy-load {
+    opacity: 0;
+    transition: all 0.5s ease-out;
+
+    &.ready {
+        opacity: 1;
     }
 }
