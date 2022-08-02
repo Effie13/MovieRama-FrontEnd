@@ -9,7 +9,7 @@ class NowPlaying {
         this.hasScroll = false;
         this.scrollObserver;
         this.page = 0;
-        this.getGenres().then((value) => this.init(value));
+        this.getGenres().then((value) => this.fetchMovies(value));
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
@@ -68,7 +68,7 @@ class NowPlaying {
         });
     }
 
-    init(genres = true) {
+    fetchMovies(genres = true) {
 
         this.page +=1;
 
@@ -115,7 +115,7 @@ class NowPlaying {
 
                 if (this.totalPages > 1 && !this.hasScroll) {
                     // Inititate Infinite Scrolling
-                    this.scrollObserver = new scrollObserver(this.wrapper);
+                    this.scrollObserver = new ScrollObserver(this.wrapper);
                 } else if (this.hasScroll) {
                     this.scrollObserver.updateTrigger();
                 }

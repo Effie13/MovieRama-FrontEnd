@@ -1,6 +1,6 @@
 /* Observer js */
 
-class scrollObserver {
+class ScrollObserver {
     constructor(element) {
         this.trigger = element.querySelector('.scroll-trigger:last-child');
         this.options = {
@@ -22,7 +22,7 @@ class scrollObserver {
                     //entry.target.classList.add('passed');
                     entry.target.remove(); // It messes with the order and how I have already implented the animation using dummy items
                     self.unobserve(entry.target);
-                    globalNowPlaying.init();  
+                    globalNowPlaying.fetchMovies();  
                 }
             });            
         }, this.options);
