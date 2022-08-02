@@ -38,12 +38,10 @@ TO BE DONE
 
 Add explanation for running and scripts in package json
 
+3. Hover state on links 
+Add linkedin on information on the bottom of the page
 4. Check basic keyboard navigation
 5. Generalize oberver for being used for the search results as well
-6. H1 have line and linear gradient background similar to search
-7. Switch background idea
-8. Change theme and reduced motion check in javascript 
-11. Intersection Observer infinite scrolling
 12. Promise for search
 13. Loader in between new rendering
 14. Check data for nulls
