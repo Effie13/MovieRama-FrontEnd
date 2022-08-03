@@ -15,6 +15,7 @@ class SearchData {
         this.value = '';
         this.request = undefined;
         this.genresArray = genresArray ? genresArray : undefined
+        this.otherWrapper = document.querySelector('.js-now-playing').parentNode;
         this.scrollObserver;
 
         this.init();
@@ -24,7 +25,6 @@ class SearchData {
 
         this.closeBtn.addEventListener('click', _ => this.closeSearch());
         // Initiate search
-
         this.input.addEventListener('input', this.debounce(this.doSearch, 300));
     }
 
@@ -112,6 +112,13 @@ class SearchData {
 
         if (!this.wrapper.classList.contains('searching')) {
             this.wrapper.classList.add('searching');
+            document.documentElement.style.scrollBehavior = 'auto';
+            setTimeout(() => window.scrollTo(0, 0), 5);
+            setTimeout(() => document.documentElement.style.scrollBehavior = 'smooth', 5);
+            this.wrapper.addEventListener('transitionend', () => {
+                this.otherWrapper.classList.remove('active');
+                this.wrapper.style.position = 'absolute';
+            }, {once: true});
             //body.classList.add('stop-scrolling');
         }
 
@@ -133,14 +140,18 @@ class SearchData {
         globalNowPlaying.scrollObserver.updateTrigger();
         this.hasScroll = false;
         this.scrollObserver.remove();
-        this.wrapper.classList.remove('searching');
-        //body.classList.remove('stop-scrolling');
+        this.wrapper.style.position = '';
+        this.wrapper.classList.remove('searching');   
+        //this.wrapper.addEventListener('transitionend', () => {
+            this.otherWrapper.classList.add('active');
+        //}, {once: true});
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
-
+        // TO DO 
+        // Add link
         const item = document.createElement('div');
-        const imgUrl = `https://image.tmdb.org/t/p/original/${poster}`;
+        const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;

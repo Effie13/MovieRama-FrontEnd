@@ -33,7 +33,6 @@
         top: 0;
         left: 0;
         width: 100%;
-        transition: transform 0.3s ease;
         transform-origin: top center;
         z-index: 100;
         transform: scaleY(0.5) skew(45deg);
@@ -43,18 +42,12 @@
         background: var(--main-color);
         padding-top: calc( 10 * var(--padding));
         padding-bottom: calc( 3 * var(--padding));
-        height: var(--screenHeight, 100vh);
-
-        > .wrapper {
-            height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
+        min-height: var(--screenHeight, 100vh);
 
         &.searching {
             transform: scaleY(1) skew(0);
+            transition: transform 0.3s ease;
             visibility: visible;
-            //opacity: 1;
         }
     }
 }

@@ -1,6 +1,7 @@
 .header {
-    position: sticky;
+    position: fixed;
     top: 0;
+    width: 100vw;
     padding: calc( 2 * var(--padding)) 0;
     background: linear-gradient(to right, transparent 0, transparent 65%,var(--background-color) 100%);
     z-index: 1000;

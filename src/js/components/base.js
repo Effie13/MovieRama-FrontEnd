@@ -1,6 +1,7 @@
 const API_KEY = '?api_key=15d382b5ad53d6b7c9569e8b85954ffa';
 const API_PATH = 'https://api.themoviedb.org/3/';
 const body = document.body;
+const header = document.querySelector('header');
 let mobile = false;
 let genresArray = undefined;
 
@@ -45,6 +46,7 @@ function debounce(callback, interval) {
 
 const computeHeight = !(() => {
     body.style.setProperty('--screenHeight', window.innerHeight + 'px');
+    body.style.setProperty('--headerHeight', header.clientHeight + 'px');
 })();
 
 window.addEventListener('resize', debounce(computeHeight, 300));

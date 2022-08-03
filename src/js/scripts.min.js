@@ -1,6 +1,7 @@
 const API_KEY = '?api_key=15d382b5ad53d6b7c9569e8b85954ffa';
 const API_PATH = 'https://api.themoviedb.org/3/';
 const body = document.body;
+const header = document.querySelector('header');
 let mobile = false;
 let genresArray = undefined;
 
@@ -45,6 +46,7 @@ function debounce(callback, interval) {
 
 const computeHeight = !(() => {
     body.style.setProperty('--screenHeight', window.innerHeight + 'px');
+    body.style.setProperty('--headerHeight', header.clientHeight + 'px');
 })();
 
 window.addEventListener('resize', debounce(computeHeight, 300));
@@ -228,7 +230,7 @@ class NowPlaying {
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
 
         const item = document.createElement('div');
-        const imgUrl = `https://image.tmdb.org/t/p/original/${poster}`;
+        const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;
@@ -413,6 +415,7 @@ class SearchData {
         this.value = '';
         this.request = undefined;
         this.genresArray = genresArray ? genresArray : undefined
+        this.otherWrapper = document.querySelector('.js-now-playing').parentNode;
         this.scrollObserver;
 
         this.init();
@@ -422,7 +425,6 @@ class SearchData {
 
         this.closeBtn.addEventListener('click', _ => this.closeSearch());
         // Initiate search
-
         this.input.addEventListener('input', this.debounce(this.doSearch, 300));
     }
 
@@ -510,6 +512,13 @@ class SearchData {
 
         if (!this.wrapper.classList.contains('searching')) {
             this.wrapper.classList.add('searching');
+            document.documentElement.style.scrollBehavior = 'auto';
+            setTimeout(() => window.scrollTo(0, 0), 5);
+            setTimeout(() => document.documentElement.style.scrollBehavior = 'smooth', 5);
+            this.wrapper.addEventListener('transitionend', () => {
+                this.otherWrapper.classList.remove('active');
+                this.wrapper.style.position = 'absolute';
+            }, {once: true});
             //body.classList.add('stop-scrolling');
         }
 
@@ -531,14 +540,18 @@ class SearchData {
         globalNowPlaying.scrollObserver.updateTrigger();
         this.hasScroll = false;
         this.scrollObserver.remove();
-        this.wrapper.classList.remove('searching');
-        //body.classList.remove('stop-scrolling');
+        this.wrapper.style.position = '';
+        this.wrapper.classList.remove('searching');   
+        //this.wrapper.addEventListener('transitionend', () => {
+            this.otherWrapper.classList.add('active');
+        //}, {once: true});
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
-
+        // TO DO 
+        // Add link
         const item = document.createElement('div');
-        const imgUrl = `https://image.tmdb.org/t/p/original/${poster}`;
+        const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;

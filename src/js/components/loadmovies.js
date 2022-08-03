@@ -15,7 +15,7 @@ class NowPlaying {
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
 
         const item = document.createElement('div');
-        const imgUrl = `https://image.tmdb.org/t/p/original/${poster}`;
+        const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;
