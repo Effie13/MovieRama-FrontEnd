@@ -1,0 +1,36 @@
+/* Styling if the user prefers light theme */
+
+.light-theme {
+    --background-color: #e5efef;
+    --text-color: #450a62;
+    --accent-color: #14ddc5;
+    --main-color: #c596c1;
+
+    *:focus {
+        outline-color: black !important;
+    }
+
+    .item-additional a, 
+    .item-additional p,
+    .items-results-info,
+    .js-search-input,
+    .js-search-input::placeholder,
+    .js-info-content *, 
+    .js-info-content a, 
+    .js-info-content h5 {
+        color: var(--text-color);
+    }
+
+    .js-adjust-font button:after, 
+    .js-adjust-font button:before {
+        background-color: var(--text-color);
+    }
+
+    .animated-circle #svg #bar {
+        stroke: var(--accent-color)
+    }
+
+    .js-search-input {
+        border-color: var(--text-color);
+    }
+}

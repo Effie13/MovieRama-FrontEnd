@@ -14,7 +14,6 @@ class SearchData {
         this.signal = this.controller.signal;
         this.value = '';
         this.request = undefined;
-        this.genresArray = genresArray ? genresArray : undefined
         this.otherWrapper = document.querySelector('.js-now-playing').parentNode;
         this.scrollObserver;
 
@@ -51,23 +50,18 @@ class SearchData {
             .then((response) => response.json())
             .then((response) => {
 
-                console.log(JSON.stringify(response, null, '\t'));
+                //console.log(JSON.stringify(response, null, '\t'));
 
                 if (this.page == 1) {
                     this.totalPages = response.total_pages;
-
-                    // const countElement = document.createElement('div');
-                    // countElement.classList = 'items-results-info';
-                    // countElement.append(`Found ${response.total_results} results`);
-                    // this.wrapper.querySelector('.wrapper').prepend(countElement);
                 }
 
                 if (response.results.length) {
                     response.results.forEach((e, i) => {
                         let genres = '';
-                        if (this.genresArray) {
+                        if (genresArray) {
                             e.genre_ids.forEach(e => {
-                                genres += this.genresArray.find(item => item.id === e).name + ' ';
+                                genres += genresArray.find(item => item.id === e).name + ' ';
                             });
                         } else {
                             // In case the genres request is not succesful and we cannot match genre id with genre name just display a list of ids
@@ -78,9 +72,15 @@ class SearchData {
                         this.list.append(element);
                         //new ItemDetails(element);
                     });
+                    this.list.append(scrollTrigger);
+                } else {
+                    // response.results.length == 0
+                    this.list.classList.add('empty');
+                    this.hasScroll = false;
+                    this.scrollObserver.remove();
+                    this.request = undefined;
+                    return;
                 }
-
-                this.list.append(scrollTrigger);
 
                 if (this.totalPages > 1 && !this.hasScroll) {
                     // Inititate Infinite Scrolling
@@ -110,13 +110,21 @@ class SearchData {
         this.list.innerHTML = '';
         //const signal = this.signal;
 
+        if (this.list.classList.contains('empty')) this.list.classList.remove('empty');
+
         if (!this.wrapper.classList.contains('searching')) {
             this.wrapper.classList.add('searching');
+
+            // This is in case we have scrolled down and then make a search
+            // So that it goes to the top again and not keep the current scrollY value
+            // We need the scrollBehavior set to auto so that it happes immediately without animation
             document.documentElement.style.scrollBehavior = 'auto';
             setTimeout(() => window.scrollTo(0, 0), 5);
             setTimeout(() => document.documentElement.style.scrollBehavior = 'smooth', 5);
+
             this.wrapper.addEventListener('transitionend', () => {
                 this.otherWrapper.classList.remove('active');
+                this.otherWrapper.setAttribute('hidden', true);
                 this.wrapper.style.position = 'absolute';
             }, {once: true});
             //body.classList.add('stop-scrolling');
@@ -137,13 +145,19 @@ class SearchData {
     }
 
     closeSearch() {
+        this.input.value = '';
         globalNowPlaying.scrollObserver.updateTrigger();
         this.hasScroll = false;
-        this.scrollObserver.remove();
-        this.wrapper.style.position = '';
-        this.wrapper.classList.remove('searching');   
+        if (this.scrollObserver) this.scrollObserver.remove();
+        this.otherWrapper.classList.add('active');
+        this.otherWrapper.removeAttribute('hidden');
+        //this.wrapper.style.position = '';
+        this.wrapper.style.display = 'none';
+        this.wrapper.classList.remove('searching'); 
+        this.wrapper.style = '';  
         //this.wrapper.addEventListener('transitionend', () => {
-            this.otherWrapper.classList.add('active');
+            //this.otherWrapper.classList.add('active');
+            // this.otherWrapper.removeAttribute('hidden');
         //}, {once: true});
     }
 

@@ -1,3 +1,43 @@
+class FontAdjust {
+    constructor() {
+        this.parent = document.querySelector('.js-adjust-font');
+        this.up = this.parent.querySelector('.js-adjust-font-increase');
+        this.down = this.parent.querySelector('.js-adjust-font-decrease');
+        this.max = parseInt(this.parent.getAttribute('data-max'));
+        this.min = parseInt(this.parent.getAttribute('data-min'));
+        this.base = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--fs').slice(0, -2));
+
+        if (this.up && this.down) this.init();
+    }
+
+    init() {
+        this.up.addEventListener('click', _ => this.increase());
+        this.down.addEventListener('click', _ => this.decrease());
+    }
+
+    setVariable(value) {
+        document.documentElement.style.setProperty('--fs', value + 'px');
+    }
+
+    decrease() {
+        this.base -=1;
+        this.setVariable(this.base);
+        this.checkValue();
+    }
+
+    increase() {
+        this.base +=1;
+        this.setVariable(this.base);
+        this.checkValue();
+    }
+
+    checkValue() {
+        this.base == this.max ? this.up.classList.add('disabled') : this.up.classList.remove('disabled')
+        this.base == this.min ? this.down.classList.add('disabled') : this.down.classList.remove('disabled')
+    }
+}
+
+const globalFontAdjust = new FontAdjust();
 const API_KEY = '?api_key=15d382b5ad53d6b7c9569e8b85954ffa';
 const API_PATH = 'https://api.themoviedb.org/3/';
 const body = document.body;
@@ -105,7 +145,8 @@ class ItemDetails {
                 }, { once: true });
             }
                  
-            window.scrollTo(0,this.element.offsetTop);
+            // Not stable in terms of animation performance
+            // window.scrollTo(0,this.element.offsetTop);
             this.element.classList.add('expanded');
 
             // Fetch additional data if not already there
@@ -120,6 +161,13 @@ class ItemDetails {
                 detailsDiv.classList = 'item-additional absolute flex rounded';
 
                 detailsDiv.addEventListener('click', e => e.stopPropagation());
+
+                // I could have used Promise all to have the data for all requests,
+                // description, reviews, video and then construct the html without manipulating the order with CSS
+                // But it is not arbitrary to have all the values
+
+                // I could also have used async await, with an await for each fetch but I didn't need to do that as well
+                // Or wanted to actually block the code execution
 
                 fetch(request)
                     .then((response) => response.json())
@@ -194,7 +242,6 @@ class ItemDetails {
                 this.element.append(detailsDiv);
                 this.withData = true;
             }
-
         });
     }
 
@@ -229,12 +276,13 @@ class NowPlaying {
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
 
-        const item = document.createElement('div');
+        const item = document.createElement('button');
         const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;
-        item.setAttribute('tabindex', 0);
+        //item.href= "javascript:;";
+        //item.setAttribute('tabindex', 0);
 
         const pxPercentage = Math.PI*40*(100-(vote_average*10))/100;
 
@@ -368,7 +416,6 @@ class ScrollObserver {
 
     init() {
         const nowplaying = this.element.classList.contains('js-now-playing');
-        console.log(nowplaying);
         
         this.observer = new IntersectionObserver((entries, self) => {
             entries.forEach(entry => {
@@ -414,7 +461,6 @@ class SearchData {
         this.signal = this.controller.signal;
         this.value = '';
         this.request = undefined;
-        this.genresArray = genresArray ? genresArray : undefined
         this.otherWrapper = document.querySelector('.js-now-playing').parentNode;
         this.scrollObserver;
 
@@ -451,23 +497,18 @@ class SearchData {
             .then((response) => response.json())
             .then((response) => {
 
-                console.log(JSON.stringify(response, null, '\t'));
+                //console.log(JSON.stringify(response, null, '\t'));
 
                 if (this.page == 1) {
                     this.totalPages = response.total_pages;
-
-                    // const countElement = document.createElement('div');
-                    // countElement.classList = 'items-results-info';
-                    // countElement.append(`Found ${response.total_results} results`);
-                    // this.wrapper.querySelector('.wrapper').prepend(countElement);
                 }
 
                 if (response.results.length) {
                     response.results.forEach((e, i) => {
                         let genres = '';
-                        if (this.genresArray) {
+                        if (genresArray) {
                             e.genre_ids.forEach(e => {
-                                genres += this.genresArray.find(item => item.id === e).name + ' ';
+                                genres += genresArray.find(item => item.id === e).name + ' ';
                             });
                         } else {
                             // In case the genres request is not succesful and we cannot match genre id with genre name just display a list of ids
@@ -478,9 +519,15 @@ class SearchData {
                         this.list.append(element);
                         //new ItemDetails(element);
                     });
+                    this.list.append(scrollTrigger);
+                } else {
+                    // response.results.length == 0
+                    this.list.classList.add('empty');
+                    this.hasScroll = false;
+                    this.scrollObserver.remove();
+                    this.request = undefined;
+                    return;
                 }
-
-                this.list.append(scrollTrigger);
 
                 if (this.totalPages > 1 && !this.hasScroll) {
                     // Inititate Infinite Scrolling
@@ -510,13 +557,21 @@ class SearchData {
         this.list.innerHTML = '';
         //const signal = this.signal;
 
+        if (this.list.classList.contains('empty')) this.list.classList.remove('empty');
+
         if (!this.wrapper.classList.contains('searching')) {
             this.wrapper.classList.add('searching');
+
+            // This is in case we have scrolled down and then make a search
+            // So that it goes to the top again and not keep the current scrollY value
+            // We need the scrollBehavior set to auto so that it happes immediately without animation
             document.documentElement.style.scrollBehavior = 'auto';
             setTimeout(() => window.scrollTo(0, 0), 5);
             setTimeout(() => document.documentElement.style.scrollBehavior = 'smooth', 5);
+
             this.wrapper.addEventListener('transitionend', () => {
                 this.otherWrapper.classList.remove('active');
+                this.otherWrapper.setAttribute('hidden', true);
                 this.wrapper.style.position = 'absolute';
             }, {once: true});
             //body.classList.add('stop-scrolling');
@@ -537,13 +592,19 @@ class SearchData {
     }
 
     closeSearch() {
+        this.input.value = '';
         globalNowPlaying.scrollObserver.updateTrigger();
         this.hasScroll = false;
-        this.scrollObserver.remove();
-        this.wrapper.style.position = '';
-        this.wrapper.classList.remove('searching');   
+        if (this.scrollObserver) this.scrollObserver.remove();
+        this.otherWrapper.classList.add('active');
+        this.otherWrapper.removeAttribute('hidden');
+        //this.wrapper.style.position = '';
+        this.wrapper.style.display = 'none';
+        this.wrapper.classList.remove('searching'); 
+        this.wrapper.style = '';  
         //this.wrapper.addEventListener('transitionend', () => {
-            this.otherWrapper.classList.add('active');
+            //this.otherWrapper.classList.add('active');
+            // this.otherWrapper.removeAttribute('hidden');
         //}, {once: true});
     }
 

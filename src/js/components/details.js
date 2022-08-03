@@ -53,7 +53,8 @@ class ItemDetails {
                 }, { once: true });
             }
                  
-            window.scrollTo(0,this.element.offsetTop);
+            // Not stable in terms of animation performance
+            // window.scrollTo(0,this.element.offsetTop);
             this.element.classList.add('expanded');
 
             // Fetch additional data if not already there
@@ -68,6 +69,13 @@ class ItemDetails {
                 detailsDiv.classList = 'item-additional absolute flex rounded';
 
                 detailsDiv.addEventListener('click', e => e.stopPropagation());
+
+                // I could have used Promise all to have the data for all requests,
+                // description, reviews, video and then construct the html without manipulating the order with CSS
+                // But it is not arbitrary to have all the values
+
+                // I could also have used async await, with an await for each fetch but I didn't need to do that as well
+                // Or wanted to actually block the code execution
 
                 fetch(request)
                     .then((response) => response.json())
@@ -142,7 +150,6 @@ class ItemDetails {
                 this.element.append(detailsDiv);
                 this.withData = true;
             }
-
         });
     }
 

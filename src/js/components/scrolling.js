@@ -18,7 +18,6 @@ class ScrollObserver {
 
     init() {
         const nowplaying = this.element.classList.contains('js-now-playing');
-        console.log(nowplaying);
         
         this.observer = new IntersectionObserver((entries, self) => {
             entries.forEach(entry => {

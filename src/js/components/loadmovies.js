@@ -14,12 +14,13 @@ class NowPlaying {
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
 
-        const item = document.createElement('div');
+        const item = document.createElement('button');
         const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;
-        item.setAttribute('tabindex', 0);
+        //item.href= "javascript:;";
+        //item.setAttribute('tabindex', 0);
 
         const pxPercentage = Math.PI*40*(100-(vote_average*10))/100;
 
