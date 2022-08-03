@@ -2,6 +2,10 @@ body {
     background-color: var(--background-color);
 }
 
+main {
+    padding-top: var(--headerHeight, 90px);
+}
+
 p, h2, h3, h4, div {
     color: var(--text-color);
 }
@@ -125,6 +129,11 @@ h5 {
     top: 0;
     left: -10vw;
     mask: url(./../assets/blur-mask.png); 
+
+    @media screen and (orientation: portrait) {
+        bottom: 0;
+        top: auto;
+    }
 }
 
 img.lazy-load {
@@ -133,5 +142,23 @@ img.lazy-load {
 
     &.ready {
         opacity: 1;
+    }
+}
+
+* {
+    scrollbar-color: rgba(0,0,0,0.6) rgba(0,0,0,0.15);
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0, 0.6);
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.15);
     }
 }

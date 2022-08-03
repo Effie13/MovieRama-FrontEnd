@@ -1,7 +1,9 @@
 const API_KEY = '?api_key=15d382b5ad53d6b7c9569e8b85954ffa';
 const API_PATH = 'https://api.themoviedb.org/3/';
 const body = document.body;
+const header = document.querySelector('header');
 let mobile = false;
+let genresArray = undefined;
 
 // Add basic functionality to make the website more accessible and respect the user's preferences in design
 // I plan on using these css classes in the next stages of developmen, after having finished the JS functionality requirements 
@@ -12,8 +14,8 @@ window.onload = () => {
 
     // I may use this if I have time to handle bugs or orientation change events after the initial build and requirements are fullfilled
     if (window.matchMedia('only screen and (hover: none) and (pointer: coarse)').matches) {
-        body.classList.add('mobile'); 
-        mobile = true; 
+        body.classList.add('mobile');
+        mobile = true;
     }
 };
 
@@ -28,6 +30,26 @@ trigger.addEventListener('click', (e) => {
 infoContent.addEventListener('click', e => e.stopPropagation());
 
 body.addEventListener('click', _ => infoContent.classList.remove('visible'));
+
+// Global debounce function
+
+function debounce(callback, interval) {
+    let debounceTimeoutId;
+
+    return function (e) {
+        clearTimeout(debounceTimeoutId);
+        debounceTimeoutId = setTimeout(() => callback, interval);
+    };
+}
+
+// Compute Screen height 
+
+const computeHeight = !(() => {
+    body.style.setProperty('--screenHeight', window.innerHeight + 'px');
+    body.style.setProperty('--headerHeight', header.clientHeight + 'px');
+})();
+
+window.addEventListener('resize', debounce(computeHeight, 300));
 
 
 class ItemDetails {
@@ -202,13 +224,13 @@ class NowPlaying {
         this.hasScroll = false;
         this.scrollObserver;
         this.page = 0;
-        this.getGenres().then((value) => this.init(value));
+        this.getGenres().then((value) => this.fetchMovies(value));
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
 
         const item = document.createElement('div');
-        const imgUrl = `https://image.tmdb.org/t/p/original/${poster}`;
+        const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;
@@ -251,7 +273,7 @@ class NowPlaying {
             fetch(request)
                 .then((response) => response.json())
                 .then((response) => {
-                    this.genresArray = response.genres;
+                    this.genresArray = genresArray = response.genres;
                     resolve(true);
                 })
                 .catch((error) => {
@@ -261,7 +283,7 @@ class NowPlaying {
         });
     }
 
-    init(genres = true) {
+    fetchMovies(genres = true) {
 
         this.page +=1;
 
@@ -308,13 +330,14 @@ class NowPlaying {
 
                 if (this.totalPages > 1 && !this.hasScroll) {
                     // Inititate Infinite Scrolling
-                    this.scrollObserver = new scrollObserver(this.wrapper);
+                    this.scrollObserver = new ScrollObserver(this.wrapper);
+                    this.hasScroll=true;
                 } else if (this.hasScroll) {
                     this.scrollObserver.updateTrigger();
                 }
 
-                if (this.totalPages == this.page && this.hasScroll) {
-                    this.scrollObserver.unobserve();
+                if (this.totalPages === this.page && this.hasScroll) {
+                    this.scrollObserver.remove();
                 }
             })
             .catch((error) => {
@@ -327,38 +350,43 @@ class NowPlaying {
 const globalNowPlaying = new NowPlaying();
 /* Observer js */
 
-class scrollObserver {
+class ScrollObserver {
     constructor(element) {
-        this.trigger = element.querySelector('.scroll-trigger:last-child');
+        this.element = element;
+        this.trigger = this.element.querySelector('.scroll-trigger:last-child');
         this.options = {
             //root: element,
             rootMargin: '0px',
             threshold: 0
         };
 
+        console.log(this.element);
+
         this.observer;
         this.init();
-
     }
 
     init() {
-        //let tr = this.trigger;
-        this.observer = new IntersectionObserver( (entries, self) => {
-            entries.forEach( entry => {
-                if ( entry.isIntersecting ) {
+        const nowplaying = this.element.classList.contains('js-now-playing');
+        console.log(nowplaying);
+        
+        this.observer = new IntersectionObserver((entries, self) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
                     //entry.target.classList.add('passed');
                     entry.target.remove(); // It messes with the order and how I have already implented the animation using dummy items
                     self.unobserve(entry.target);
-                    globalNowPlaying.init();  
+                    nowplaying ? globalNowPlaying.fetchMovies() : globalSearchData.loadData()
                 }
-            });            
+            });
         }, this.options);
 
         this.runObserve();
     }
 
     updateTrigger() {
-        this.trigger = element.querySelector('.scroll-trigger:last-child');
+        this.trigger = this.element.querySelector('.scroll-trigger:last-child');
+        console.log(this.trigger);
         this.runObserve();
     }
 
@@ -366,7 +394,198 @@ class scrollObserver {
         this.observer.observe(this.trigger);
     }
 
-    unobserve() {
+    remove() {
         this.observer.disconnect();
     }
 }
+class SearchData {
+    constructor() {
+        this.list = document.querySelector('.js-search-list');
+        this.wrapper = this.list.parentNode.parentNode;
+        this.input = document.querySelector('.js-search-input');
+        this.endpoint = `${API_PATH}search/movie${API_KEY}&include_adult=false&page=`;
+        this.page = 0;
+        this.results = undefined;
+        this.totalPages = 0;
+        this.hasScroll = false;
+        this.valueHolder = document.querySelector('.js-value');
+        this.closeBtn = document.querySelector('.js-search-close');
+        this.controller = new AbortController();
+        this.signal = this.controller.signal;
+        this.value = '';
+        this.request = undefined;
+        this.genresArray = genresArray ? genresArray : undefined
+        this.otherWrapper = document.querySelector('.js-now-playing').parentNode;
+        this.scrollObserver;
+
+        this.init();
+    }
+
+    init() {
+
+        this.closeBtn.addEventListener('click', _ => this.closeSearch());
+        // Initiate search
+        this.input.addEventListener('input', this.debounce(this.doSearch, 300));
+    }
+
+    debounce(callback, interval) {
+        let debounceTimeoutId;
+        const self = this;
+
+        return function (...args) {
+            clearTimeout(debounceTimeoutId);
+            debounceTimeoutId = setTimeout(() => callback.apply(self, args), interval);
+        };
+    }
+
+    loadData() {
+        const scrollTrigger = document.createElement('div');
+        scrollTrigger.classList = 'scroll-trigger';
+
+        const signal = this.signal;
+        this.page += 1;
+
+        const request = new Request(this.endpoint + this.page + '&query=' + encodeURI(this.value));
+
+        this.request = fetch(request, { signal })
+            .then((response) => response.json())
+            .then((response) => {
+
+                console.log(JSON.stringify(response, null, '\t'));
+
+                if (this.page == 1) {
+                    this.totalPages = response.total_pages;
+
+                    // const countElement = document.createElement('div');
+                    // countElement.classList = 'items-results-info';
+                    // countElement.append(`Found ${response.total_results} results`);
+                    // this.wrapper.querySelector('.wrapper').prepend(countElement);
+                }
+
+                if (response.results.length) {
+                    response.results.forEach((e, i) => {
+                        let genres = '';
+                        if (this.genresArray) {
+                            e.genre_ids.forEach(e => {
+                                genres += this.genresArray.find(item => item.id === e).name + ' ';
+                            });
+                        } else {
+                            // In case the genres request is not succesful and we cannot match genre id with genre name just display a list of ids
+                            genres = JSON.stringify(e.genre_ids);
+                        }
+
+                        const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
+                        this.list.append(element);
+                        //new ItemDetails(element);
+                    });
+                }
+
+                this.list.append(scrollTrigger);
+
+                if (this.totalPages > 1 && !this.hasScroll) {
+                    // Inititate Infinite Scrolling
+                    this.scrollObserver = new ScrollObserver(this.list);
+                    this.hasScroll = true;
+                } else if (this.hasScroll) {
+                    this.scrollObserver.updateTrigger();
+                }
+
+                if (this.totalPages == this.page && this.hasScroll) {
+                    this.scrollObserver.remove();
+                }
+
+                this.request = undefined;
+            })
+            .catch((error) => {
+                alert('in movies' + error);
+                console.log(error.stack);
+            });
+    }
+
+    doSearch() {
+        const value = this.input.value;
+
+        // Kill Previous Search and rendering
+        if (this.request) this.controller.abort();
+        this.list.innerHTML = '';
+        //const signal = this.signal;
+
+        if (!this.wrapper.classList.contains('searching')) {
+            this.wrapper.classList.add('searching');
+            document.documentElement.style.scrollBehavior = 'auto';
+            setTimeout(() => window.scrollTo(0, 0), 5);
+            setTimeout(() => document.documentElement.style.scrollBehavior = 'smooth', 5);
+            this.wrapper.addEventListener('transitionend', () => {
+                this.otherWrapper.classList.remove('active');
+                this.wrapper.style.position = 'absolute';
+            }, {once: true});
+            //body.classList.add('stop-scrolling');
+        }
+
+        globalNowPlaying.scrollObserver.remove();
+
+        // Check if Results Wrapper is visible
+        if (value.length > 3) {
+            this.valueHolder.innerHTML = value;
+            this.value = value;
+
+            this.loadData();
+
+        } else {
+            this.closeSearch();
+        }
+    }
+
+    closeSearch() {
+        globalNowPlaying.scrollObserver.updateTrigger();
+        this.hasScroll = false;
+        this.scrollObserver.remove();
+        this.wrapper.style.position = '';
+        this.wrapper.classList.remove('searching');   
+        //this.wrapper.addEventListener('transitionend', () => {
+            this.otherWrapper.classList.add('active');
+        //}, {once: true});
+    }
+
+    item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
+        // TO DO 
+        // Add link
+        const item = document.createElement('div');
+        const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
+        item.classList = 'item border-box';
+        item.dataset.id = id;
+        item.dataset.imgurl = imgUrl;
+        item.setAttribute('tabindex', 0);
+
+        const pxPercentage = Math.PI * 40 * (100 - (vote_average * 10)) / 100;
+
+        item.innerHTML = `
+            <div class="relative">
+                <div class="item-imgWrapper rounded">
+                    <img src="${imgUrl}" alt="${title} thumbnail" class="lazy-load">
+                </div>
+                <div class="item-content absolute smooth-medium rounded flex-column">
+                    <h3>${title}</h3>
+                    <div class="item-details">
+                        <div>Released on: ${release_date}</div>
+                        <div>Genres: ${genres}</div>
+                        <div class="flex animation-wrapper">Average vote: 
+                            <span class="animated-circle" data-percentage="${vote_average * 10}" style="--percentage:${pxPercentage}px">
+                                <svg id="svg" width="50" height="50" viewPort="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <circle r="20" cx="25" cy="25" fill="transparent" stroke-dasharray="${Math.PI * 40}" stroke-dashoffset="0"></circle>
+                                    <circle id="bar" r="20" cx="25" cy="25" fill="transparent" stroke-dasharray="${Math.PI * 40}" stroke-dashoffset="0"></circle>
+                                </svg>
+                                <span class="absolute">${vote_average}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+        item.querySelector('.lazy-load').addEventListener('load', (e) => e.target.classList.add('ready'));
+
+        return item;
+    }
+}
+
+const globalSearchData = new SearchData();

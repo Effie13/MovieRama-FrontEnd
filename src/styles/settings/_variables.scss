@@ -1,0 +1,29 @@
+@use "sass:map";
+
+// 
+$breakpoints: (laptop: 1560px, small-screen: 1280px, tablet: 1024px, small-tablet: 768px, mobile: 480px);
+$breakpointsMin: (laptop: 1561px, small-screen: 1281px, tablet: 1025px, small-tablet: 769px, mobile: 481px);
+
+@mixin max-width-query($mq-breakpoint, $mq-breakpoints: $breakpoints) {
+    // If $mq-breakpoint is a key that exists in
+    // $mq-breakpoints, get and use the value
+    @if map-has-key($mq-breakpoints, $mq-breakpoint) {
+      $mq-breakpoint: map-get($mq-breakpoints, $mq-breakpoint);
+    }
+    
+    @media screen and (max-width: #{$mq-breakpoint}) {
+      @content;
+    }
+}
+
+@mixin min-width-query($mq-breakpoint, $mq-breakpoints: $breakpointsMin) {
+    // If $mq-breakpoint is a key that exists in
+    // $mq-breakpoints, get and use the value
+    @if map-has-key($mq-breakpoints, $mq-breakpoint) {
+      $mq-breakpoint: map-get($mq-breakpoints, $mq-breakpoint);
+    }
+    
+    @media screen and (min-width: #{$mq-breakpoint}) {
+      @content;
+    }
+}
