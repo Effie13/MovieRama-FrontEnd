@@ -136,7 +136,7 @@ class ItemDetails {
                 this.element.classList.remove('expanded');
                 return;
             }
- 
+
             if (!this.element.classList.contains('expanded') && !this.imgReady) {
                 this.imageChange(this.element.getAttribute('data-imgurl'));
             } else if (this.imgReady) {
@@ -144,7 +144,7 @@ class ItemDetails {
                     this.imageChange(this.element.getAttribute('data-imgurl'));
                 }, { once: true });
             }
-                 
+
             // Not stable in terms of animation performance
             // window.scrollTo(0,this.element.offsetTop);
             this.element.classList.add('expanded');
@@ -169,6 +169,26 @@ class ItemDetails {
                 // I could also have used async await, with an await for each fetch but I didn't need to do that as well
                 // Or wanted to actually block the code execution
 
+                // TO DO: Performance improvement
+                // async function fetchDetails() {
+                //     const [moviesResponse, categoriesResponse] = await Promise.allSettled([
+                //         fetch(detailsRequest),
+                //         fetch(trailerRequest),
+                //         fetch(reviewRequest)
+                //     ]);
+                //     const details = await detailsResponse.json();
+                //     const trailer = await trailerResponse.json();
+                //     const reviews = await reviewsResponse.json();
+                //     return [details, trailer, reviews];
+                // }
+
+                // fetchDetails().then(([details, trailer, reviews]) => {
+                //     Remove loader and handle data
+                // }).catch(error => {
+                //     // Handle Erros
+                // });
+
+
                 fetch(request)
                     .then((response) => response.json())
                     .then((response) => {
@@ -184,7 +204,7 @@ class ItemDetails {
 
                     })
                     .catch((error) => {
-                        alert('in movie with id ' + this.id + ' ' + error);
+                        //alert('in movie with id ' + this.id + ' ' + error);
                         console.log(error.stack);
                     });
 
@@ -215,7 +235,7 @@ class ItemDetails {
                         detailsDiv.append(reviewsWrapper);
                     })
                     .catch((error) => {
-                        alert('in reviews for movie with id ' + this.id + ' ' + error);
+                        //alert('in reviews for movie with id ' + this.id + ' ' + error);
                         console.log(error.stack);
                     });
 
@@ -235,7 +255,7 @@ class ItemDetails {
                         }
                     })
                     .catch((error) => {
-                        alert('in reviews for movie with id ' + this.id + ' ' + error);
+                        //alert('in reviews for movie with id ' + this.id + ' ' + error);
                         console.log(error.stack);
                     });
 
@@ -269,9 +289,11 @@ class NowPlaying {
         this.wrapper = document.querySelector('.js-now-playing');
         this.genresArray = undefined;
         this.hasScroll = false;
+        this.dummyElement = document.createElement('div');
+        this.dummyElement.classList = 'item-dummy animated';
         this.scrollObserver;
         this.page = 0;
-        this.getGenres().then((value) => this.fetchMovies(value));
+        this.getGenres().then( _ => this.fetchMovies());
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
@@ -284,7 +306,7 @@ class NowPlaying {
         //item.href= "javascript:;";
         //item.setAttribute('tabindex', 0);
 
-        const pxPercentage = Math.PI*40*(100-(vote_average*10))/100;
+        const pxPercentage = Math.PI * 40 * (100 - (vote_average * 10)) / 100;
 
         item.innerHTML = `
             <div class="relative">
@@ -297,10 +319,10 @@ class NowPlaying {
                         <div>Released on: ${release_date}</div>
                         <div>Genres: ${genres}</div>
                         <div class="flex animation-wrapper">Average vote: 
-                            <span class="animated-circle" data-percentage="${vote_average*10}" style="--percentage:${pxPercentage}px">
+                            <span class="animated-circle" data-percentage="${vote_average * 10}" style="--percentage:${pxPercentage}px">
                                 <svg id="svg" width="50" height="50" viewPort="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <circle r="20" cx="25" cy="25" fill="transparent" stroke-dasharray="${Math.PI*40}" stroke-dashoffset="0"></circle>
-                                    <circle id="bar" r="20" cx="25" cy="25" fill="transparent" stroke-dasharray="${Math.PI*40}" stroke-dashoffset="0"></circle>
+                                    <circle r="20" cx="25" cy="25" fill="transparent" stroke-dasharray="${Math.PI * 40}" stroke-dashoffset="0"></circle>
+                                    <circle id="bar" r="20" cx="25" cy="25" fill="transparent" stroke-dasharray="${Math.PI * 40}" stroke-dashoffset="0"></circle>
                                 </svg>
                                 <span class="absolute">${vote_average}</span>
                             </span>
@@ -314,37 +336,42 @@ class NowPlaying {
         return item;
     }
 
-    getGenres() {
+    async getGenres() {
         const request = new Request(this.genres);
 
-        return new Promise((resolve) => {
+        return await
             fetch(request)
                 .then((response) => response.json())
                 .then((response) => {
                     this.genresArray = genresArray = response.genres;
-                    resolve(true);
+                    return;
                 })
                 .catch((error) => {
-                    alert('in genres' + error);
-                    resolve(false);
+                    console.log(error + ' while requesting movies genres.');
+                    return;
                 });
-        });
     }
 
-    fetchMovies(genres = true) {
+    fetchMovies() {
 
-        this.page +=1;
+        this.page += 1;
 
-        const request = new Request(this.now_playing +'&page=' +this.page);
-        const dummyElement = document.createElement('div');
-        dummyElement.classList = 'item-dummy animated';
+        const request = new Request(this.now_playing + '&page=' + this.page);
+        //const dummyElement = document.createElement('div');
+        //dummyElement.classList = 'item-dummy animated';
 
         const scrollTrigger = document.createElement('div');
         scrollTrigger.classList = 'scroll-trigger';
-        
-        fetch(request)
-            .then((response) => response.json())
-            .then((response) => {
+
+        async function movies() {
+            let response = await fetch(request);
+            return response = await response.json();
+        };
+
+        movies().then((response) => {
+
+                // Remove loader
+                this.wrapper.parentNode.classList.remove('loading');
 
                 if (this.page == 1) {
                     this.totalPages = response.total_pages;
@@ -354,7 +381,7 @@ class NowPlaying {
                     countElement.append(`Found ${response.total_results} results, playing until ${response.dates.maximum}`);
                     this.wrapper.prepend(countElement);
                 }
-            
+
                 response.results.forEach((e, i) => {
                     let genres = '';
                     if (this.genresArray) {
@@ -368,8 +395,8 @@ class NowPlaying {
 
                     const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
                     this.wrapper.append(element);
-                    if ( (i+1) % 2 == 0) {
-                        this.wrapper.append(dummyElement.cloneNode());
+                    if ((i + 1) % 2 == 0) {
+                        this.wrapper.append(this.dummyElement.cloneNode());
                     }
                     new ItemDetails(element);
                 });
@@ -379,7 +406,7 @@ class NowPlaying {
                 if (this.totalPages > 1 && !this.hasScroll) {
                     // Inititate Infinite Scrolling
                     this.scrollObserver = new ScrollObserver(this.wrapper);
-                    this.hasScroll=true;
+                    this.hasScroll = true;
                 } else if (this.hasScroll) {
                     this.scrollObserver.updateTrigger();
                 }
@@ -389,9 +416,66 @@ class NowPlaying {
                 }
             })
             .catch((error) => {
-                alert('in movies' + error);
+                // Remove loader
+                this.wrapper.parentNode.classList.remove('loading');
+                // Give some feedback
+                const errorItem = document.createElement('div');
+                errorItem.classList = 'error-message align-center row';
+                errorItem.innerHTML = `Error during the fetch request probably due to bad connection.`;
+                this.wrapper.append(errorItem);
                 console.log(error.stack);
             });
+
+        // fetch(request)
+        //     .then((response) => response.json())
+        //     .then((response) => {
+
+        //         if (this.page == 1) {
+        //             this.totalPages = response.total_pages;
+
+        //             const countElement = document.createElement('div');
+        //             countElement.classList = 'items-results-info';
+        //             countElement.append(`Found ${response.total_results} results, playing until ${response.dates.maximum}`);
+        //             this.wrapper.prepend(countElement);
+        //         }
+
+        //         response.results.forEach((e, i) => {
+        //             let genres = '';
+        //             if (this.genresArray) {
+        //                 e.genre_ids.forEach(e => {
+        //                     genres += this.genresArray.find(item => item.id === e).name + ' ';
+        //                 });
+        //             } else {
+        //                 // In case the genres request is not succesful and we cannot match genre id with genre name just display a list of ids
+        //                 genres = JSON.stringify(e.genre_ids);
+        //             }
+
+        //             const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
+        //             this.wrapper.append(element);
+        //             if ((i + 1) % 2 == 0) {
+        //                 this.wrapper.append(this.dummyElement.cloneNode());
+        //             }
+        //             new ItemDetails(element);
+        //         });
+
+        //         this.wrapper.append(scrollTrigger);
+
+        //         if (this.totalPages > 1 && !this.hasScroll) {
+        //             // Inititate Infinite Scrolling
+        //             this.scrollObserver = new ScrollObserver(this.wrapper);
+        //             this.hasScroll = true;
+        //         } else if (this.hasScroll) {
+        //             this.scrollObserver.updateTrigger();
+        //         }
+
+        //         if (this.totalPages === this.page && this.hasScroll) {
+        //             this.scrollObserver.remove();
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         alert('in movies' + error);
+        //         console.log(error.stack);
+        //     });
     }
 }
 
@@ -407,8 +491,6 @@ class ScrollObserver {
             rootMargin: '0px',
             threshold: 0
         };
-
-        console.log(this.element);
 
         this.observer;
         this.init();
@@ -433,7 +515,6 @@ class ScrollObserver {
 
     updateTrigger() {
         this.trigger = this.element.querySelector('.scroll-trigger:last-child');
-        console.log(this.trigger);
         this.runObserve();
     }
 
@@ -462,6 +543,8 @@ class SearchData {
         this.value = '';
         this.request = undefined;
         this.otherWrapper = document.querySelector('.js-now-playing').parentNode;
+        this.dummyElement = document.createElement('div');
+        this.dummyElement.classList = 'item-dummy animated';
         this.scrollObserver;
 
         this.init();
@@ -493,11 +576,80 @@ class SearchData {
 
         const request = new Request(this.endpoint + this.page + '&query=' + encodeURI(this.value));
 
+        // The commented code below is still in progress
+
+        // async function movies() {
+        //     return this.request = await fetch(request, { signal });
+        // };
+
+        // movies().then((response) => response.json())
+        // .then((response) => {
+
+        //     this.list.parentNode.classList.remove('loading');
+
+        //     if (this.page == 1) {
+        //         this.totalPages = response.total_pages;
+        //     }
+
+        //     if (response.results.length) {
+        //         response.results.forEach((e, i) => {
+        //             let genres = '';
+        //             if (genresArray) {
+        //                 e.genre_ids.forEach(e => {
+        //                     genres += genresArray.find(item => item.id === e).name + ' ';
+        //                 });
+        //             } else {
+        //                 // In case the genres request is not succesful and we cannot match genre id with genre name just display a list of ids
+        //                 genres = JSON.stringify(e.genre_ids);
+        //             }
+
+        //             const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
+        //             this.list.append(element);
+        //             if ( (i+1) % 2 == 0) {
+        //                 this.list.append(this.dummyElement.cloneNode());
+        //             }
+        //             new ItemDetails(element);
+        //         });
+        //         this.list.append(scrollTrigger);
+        //     } else {
+        //         // response.results.length == 0
+        //         this.list.classList.add('empty');
+        //         this.hasScroll = false;
+        //         this.scrollObserver.remove();
+        //         this.request = undefined;
+        //         return;
+        //     }
+
+        //     if (this.totalPages > 1 && !this.hasScroll) {
+        //         // Inititate Infinite Scrolling
+        //         this.scrollObserver = new ScrollObserver(this.list);
+        //         this.hasScroll = true;
+        //     } else if (this.hasScroll) {
+        //         this.scrollObserver.updateTrigger();
+        //     }
+
+        //     if (this.totalPages == this.page && this.hasScroll) {
+        //         this.scrollObserver.remove();
+        //     }
+
+        //     this.request = undefined;
+        // })
+        // .catch((error) => {
+        //     if (this.list.innerHTML == '') {
+        //         this.list.parentNode.classList.remove('loading');
+        //         const errorItem = document.createElement('div');
+        //         errorItem.classList = 'error-message';
+        //         errorItem.innerHTML = `Error during the fetch request while searching.`;
+        //         this.list.append(errorItem);
+        //     }
+        //     console.log(error.stack);
+        // });
+
         this.request = fetch(request, { signal })
             .then((response) => response.json())
             .then((response) => {
 
-                //console.log(JSON.stringify(response, null, '\t'));
+                this.list.parentNode.classList.remove('loading');
 
                 if (this.page == 1) {
                     this.totalPages = response.total_pages;
@@ -517,7 +669,10 @@ class SearchData {
 
                         const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
                         this.list.append(element);
-                        //new ItemDetails(element);
+                        if ((i + 1) % 2 == 0) {
+                            this.list.append(this.dummyElement.cloneNode());
+                        }
+                        new ItemDetails(element);
                     });
                     this.list.append(scrollTrigger);
                 } else {
@@ -544,7 +699,13 @@ class SearchData {
                 this.request = undefined;
             })
             .catch((error) => {
-                alert('in movies' + error);
+                if (this.list.innerHTML == '') {
+                    this.list.parentNode.classList.remove('loading');
+                    const errorItem = document.createElement('div');
+                    errorItem.classList = 'error-message';
+                    errorItem.innerHTML = `Error during the fetch request while searching.`;
+                    this.list.append(errorItem);
+                }
                 console.log(error.stack);
             });
     }
@@ -573,11 +734,12 @@ class SearchData {
                 this.otherWrapper.classList.remove('active');
                 this.otherWrapper.setAttribute('hidden', true);
                 this.wrapper.style.position = 'absolute';
-            }, {once: true});
-            //body.classList.add('stop-scrolling');
+            }, { once: true });
         }
 
-        globalNowPlaying.scrollObserver.remove();
+        // Otherwise it throws an error if the connection is bad and 
+        // the fetch request in loadmovies is not finished
+        if (globalNowPlaying.hasScroll) globalNowPlaying.scrollObserver.remove();
 
         // Check if Results Wrapper is visible
         if (value.length > 3) {
@@ -593,30 +755,29 @@ class SearchData {
 
     closeSearch() {
         this.input.value = '';
-        globalNowPlaying.scrollObserver.updateTrigger();
+        if (globalNowPlaying.hasScroll) globalNowPlaying.scrollObserver.updateTrigger();
         this.hasScroll = false;
         if (this.scrollObserver) this.scrollObserver.remove();
         this.otherWrapper.classList.add('active');
         this.otherWrapper.removeAttribute('hidden');
         //this.wrapper.style.position = '';
         this.wrapper.style.display = 'none';
-        this.wrapper.classList.remove('searching'); 
-        this.wrapper.style = '';  
+        this.wrapper.classList.remove('searching');
+        this.wrapper.style = '';
+        this.list.parentNode.classList.add('loading');
         //this.wrapper.addEventListener('transitionend', () => {
-            //this.otherWrapper.classList.add('active');
-            // this.otherWrapper.removeAttribute('hidden');
+        //this.otherWrapper.classList.add('active');
+        // this.otherWrapper.removeAttribute('hidden');
         //}, {once: true});
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
-        // TO DO 
-        // Add link
-        const item = document.createElement('div');
+
+        const item = document.createElement('button');
         const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;
-        item.setAttribute('tabindex', 0);
 
         const pxPercentage = Math.PI * 40 * (100 - (vote_average * 10)) / 100;
 

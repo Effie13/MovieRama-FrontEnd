@@ -17,7 +17,9 @@
     .js-search-input::placeholder,
     .js-info-content *, 
     .js-info-content a, 
-    .js-info-content h5 {
+    .js-info-content h5,
+    .error-message,
+    .review-author {
         color: var(--text-color);
     }
 
@@ -32,5 +34,17 @@
 
     .js-search-input {
         border-color: var(--text-color);
+    }
+
+    .loader span:nth-child(even) {
+        background-color: var(--text-color);
+    }
+
+    .js-info-trigger {
+        background-image: url(../assets/info-dark.svg) !important;
+    }
+
+    .js-search-close {
+        background-image: url(./../assets/close-dark.svg) !important;
     }
 }

@@ -1,5 +1,8 @@
 ﻿/* Settings */
 
+// TO DO: Separate query mixins that need to be used global and include it here
+// Keep z-index map separately and use when needed
+
 @use 'settings/base';
 @use 'settings/light-theme';
 

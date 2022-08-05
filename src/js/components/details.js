@@ -44,7 +44,7 @@ class ItemDetails {
                 this.element.classList.remove('expanded');
                 return;
             }
- 
+
             if (!this.element.classList.contains('expanded') && !this.imgReady) {
                 this.imageChange(this.element.getAttribute('data-imgurl'));
             } else if (this.imgReady) {
@@ -52,7 +52,7 @@ class ItemDetails {
                     this.imageChange(this.element.getAttribute('data-imgurl'));
                 }, { once: true });
             }
-                 
+
             // Not stable in terms of animation performance
             // window.scrollTo(0,this.element.offsetTop);
             this.element.classList.add('expanded');
@@ -77,6 +77,26 @@ class ItemDetails {
                 // I could also have used async await, with an await for each fetch but I didn't need to do that as well
                 // Or wanted to actually block the code execution
 
+                // TO DO: Performance improvement
+                // async function fetchDetails() {
+                //     const [moviesResponse, categoriesResponse] = await Promise.allSettled([
+                //         fetch(detailsRequest),
+                //         fetch(trailerRequest),
+                //         fetch(reviewRequest)
+                //     ]);
+                //     const details = await detailsResponse.json();
+                //     const trailer = await trailerResponse.json();
+                //     const reviews = await reviewsResponse.json();
+                //     return [details, trailer, reviews];
+                // }
+
+                // fetchDetails().then(([details, trailer, reviews]) => {
+                //     Remove loader and handle data
+                // }).catch(error => {
+                //     // Handle Erros
+                // });
+
+
                 fetch(request)
                     .then((response) => response.json())
                     .then((response) => {
@@ -92,7 +112,7 @@ class ItemDetails {
 
                     })
                     .catch((error) => {
-                        alert('in movie with id ' + this.id + ' ' + error);
+                        //alert('in movie with id ' + this.id + ' ' + error);
                         console.log(error.stack);
                     });
 
@@ -123,7 +143,7 @@ class ItemDetails {
                         detailsDiv.append(reviewsWrapper);
                     })
                     .catch((error) => {
-                        alert('in reviews for movie with id ' + this.id + ' ' + error);
+                        //alert('in reviews for movie with id ' + this.id + ' ' + error);
                         console.log(error.stack);
                     });
 
@@ -143,7 +163,7 @@ class ItemDetails {
                         }
                     })
                     .catch((error) => {
-                        alert('in reviews for movie with id ' + this.id + ' ' + error);
+                        //alert('in reviews for movie with id ' + this.id + ' ' + error);
                         console.log(error.stack);
                     });
 

@@ -15,6 +15,8 @@ class SearchData {
         this.value = '';
         this.request = undefined;
         this.otherWrapper = document.querySelector('.js-now-playing').parentNode;
+        this.dummyElement = document.createElement('div');
+        this.dummyElement.classList = 'item-dummy animated';
         this.scrollObserver;
 
         this.init();
@@ -46,11 +48,80 @@ class SearchData {
 
         const request = new Request(this.endpoint + this.page + '&query=' + encodeURI(this.value));
 
+        // The commented code below is still in progress
+
+        // async function movies() {
+        //     return this.request = await fetch(request, { signal });
+        // };
+
+        // movies().then((response) => response.json())
+        // .then((response) => {
+
+        //     this.list.parentNode.classList.remove('loading');
+
+        //     if (this.page == 1) {
+        //         this.totalPages = response.total_pages;
+        //     }
+
+        //     if (response.results.length) {
+        //         response.results.forEach((e, i) => {
+        //             let genres = '';
+        //             if (genresArray) {
+        //                 e.genre_ids.forEach(e => {
+        //                     genres += genresArray.find(item => item.id === e).name + ' ';
+        //                 });
+        //             } else {
+        //                 // In case the genres request is not succesful and we cannot match genre id with genre name just display a list of ids
+        //                 genres = JSON.stringify(e.genre_ids);
+        //             }
+
+        //             const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
+        //             this.list.append(element);
+        //             if ( (i+1) % 2 == 0) {
+        //                 this.list.append(this.dummyElement.cloneNode());
+        //             }
+        //             new ItemDetails(element);
+        //         });
+        //         this.list.append(scrollTrigger);
+        //     } else {
+        //         // response.results.length == 0
+        //         this.list.classList.add('empty');
+        //         this.hasScroll = false;
+        //         this.scrollObserver.remove();
+        //         this.request = undefined;
+        //         return;
+        //     }
+
+        //     if (this.totalPages > 1 && !this.hasScroll) {
+        //         // Inititate Infinite Scrolling
+        //         this.scrollObserver = new ScrollObserver(this.list);
+        //         this.hasScroll = true;
+        //     } else if (this.hasScroll) {
+        //         this.scrollObserver.updateTrigger();
+        //     }
+
+        //     if (this.totalPages == this.page && this.hasScroll) {
+        //         this.scrollObserver.remove();
+        //     }
+
+        //     this.request = undefined;
+        // })
+        // .catch((error) => {
+        //     if (this.list.innerHTML == '') {
+        //         this.list.parentNode.classList.remove('loading');
+        //         const errorItem = document.createElement('div');
+        //         errorItem.classList = 'error-message';
+        //         errorItem.innerHTML = `Error during the fetch request while searching.`;
+        //         this.list.append(errorItem);
+        //     }
+        //     console.log(error.stack);
+        // });
+
         this.request = fetch(request, { signal })
             .then((response) => response.json())
             .then((response) => {
 
-                //console.log(JSON.stringify(response, null, '\t'));
+                this.list.parentNode.classList.remove('loading');
 
                 if (this.page == 1) {
                     this.totalPages = response.total_pages;
@@ -70,7 +141,10 @@ class SearchData {
 
                         const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
                         this.list.append(element);
-                        //new ItemDetails(element);
+                        if ((i + 1) % 2 == 0) {
+                            this.list.append(this.dummyElement.cloneNode());
+                        }
+                        new ItemDetails(element);
                     });
                     this.list.append(scrollTrigger);
                 } else {
@@ -97,7 +171,13 @@ class SearchData {
                 this.request = undefined;
             })
             .catch((error) => {
-                alert('in movies' + error);
+                if (this.list.innerHTML == '') {
+                    this.list.parentNode.classList.remove('loading');
+                    const errorItem = document.createElement('div');
+                    errorItem.classList = 'error-message';
+                    errorItem.innerHTML = `Error during the fetch request while searching.`;
+                    this.list.append(errorItem);
+                }
                 console.log(error.stack);
             });
     }
@@ -126,11 +206,12 @@ class SearchData {
                 this.otherWrapper.classList.remove('active');
                 this.otherWrapper.setAttribute('hidden', true);
                 this.wrapper.style.position = 'absolute';
-            }, {once: true});
-            //body.classList.add('stop-scrolling');
+            }, { once: true });
         }
 
-        globalNowPlaying.scrollObserver.remove();
+        // Otherwise it throws an error if the connection is bad and 
+        // the fetch request in loadmovies is not finished
+        if (globalNowPlaying.hasScroll) globalNowPlaying.scrollObserver.remove();
 
         // Check if Results Wrapper is visible
         if (value.length > 3) {
@@ -146,30 +227,29 @@ class SearchData {
 
     closeSearch() {
         this.input.value = '';
-        globalNowPlaying.scrollObserver.updateTrigger();
+        if (globalNowPlaying.hasScroll) globalNowPlaying.scrollObserver.updateTrigger();
         this.hasScroll = false;
         if (this.scrollObserver) this.scrollObserver.remove();
         this.otherWrapper.classList.add('active');
         this.otherWrapper.removeAttribute('hidden');
         //this.wrapper.style.position = '';
         this.wrapper.style.display = 'none';
-        this.wrapper.classList.remove('searching'); 
-        this.wrapper.style = '';  
+        this.wrapper.classList.remove('searching');
+        this.wrapper.style = '';
+        this.list.parentNode.classList.add('loading');
         //this.wrapper.addEventListener('transitionend', () => {
-            //this.otherWrapper.classList.add('active');
-            // this.otherWrapper.removeAttribute('hidden');
+        //this.otherWrapper.classList.add('active');
+        // this.otherWrapper.removeAttribute('hidden');
         //}, {once: true});
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
-        // TO DO 
-        // Add link
-        const item = document.createElement('div');
+
+        const item = document.createElement('button');
         const imgUrl = poster ? `https://image.tmdb.org/t/p/original/${poster}` : './src/assets/movie.png';
         item.classList = 'item border-box';
         item.dataset.id = id;
         item.dataset.imgurl = imgUrl;
-        item.setAttribute('tabindex', 0);
 
         const pxPercentage = Math.PI * 40 * (100 - (vote_average * 10)) / 100;
 

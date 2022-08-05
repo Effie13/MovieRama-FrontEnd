@@ -10,8 +10,6 @@ class ScrollObserver {
             threshold: 0
         };
 
-        console.log(this.element);
-
         this.observer;
         this.init();
     }
@@ -35,7 +33,6 @@ class ScrollObserver {
 
     updateTrigger() {
         this.trigger = this.element.querySelector('.scroll-trigger:last-child');
-        console.log(this.trigger);
         this.runObserve();
     }
 

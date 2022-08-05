@@ -1,3 +1,16 @@
+@use '../settings/variables' as global;
+
+:root {
+    --contentHeight: 400px;
+    @include global.max-width-query(small-screen) {
+        --contentHeight: 500px;
+    }
+
+    @include global.max-width-query(small-tablet) {
+        --contentHeight: 600px;
+    }
+}
+
 body {
     background-color: var(--background-color);
 }
@@ -112,6 +125,10 @@ main {
 h2 {
     font-size: calc(var(--fs) + 18px);
     margin-bottom: calc(2 * var(--padding));
+
+    @include global.max-width-query(mobile) {
+        font-size: calc(var(--fs) + 12px);
+    }
 }
 
 h4 {
@@ -176,6 +193,10 @@ img.lazy-load {
     right: calc(2 * var(--padding));
     top: calc(var(--headerHeight) + 2 * var(--padding));
 
+    @include global.max-width-query(small-tablet) {
+        display: none;
+    }
+
     > * {
         background: transparent;
         width: 22px;
@@ -229,5 +250,22 @@ img.lazy-load {
             top: 0;
             left: 10px;
         }
+    }
+}
+
+.error-message {
+    color: white;
+    font-size: calc(var(--fs) + 3px);
+}
+
+.mobile-only {
+    @include global.min-width-query(mobile) {
+        display: none;
+    }
+}
+
+.desktop-only {
+    @include global.max-width-query(tablet) {
+        display: none;
     }
 }

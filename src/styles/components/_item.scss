@@ -15,20 +15,17 @@
     }
 
     &-wrapper {
-        margin-top: calc( 4 * var(--padding));
+        --marginTop: calc( 4 * var(--padding));
+        margin-top: var(--marginTop);
         position: absolute;
-        --contentHeight: 400px;
-
-        @include global.max-width-query(small-screen) {
-            --contentHeight: 500px;
-        }
-
-        @include global.max-width-query(small-tablet) {
-            --contentHeight: 600px;
-        }
+        min-height: calc( var(--screenheight, 100vh) - var(--headerHeight, 90px) - var(--marginTop));
 
         &.wrapper {
             width: calc(100% - (10 * var(--padding)));
+
+            @include global.max-width-query(mobile) {
+                width: calc(100% - (4 * var(--padding)));
+            }
         }
 
         &:before{
@@ -72,6 +69,8 @@
     padding: var(--padding);
     color: white !important;
     background: none;
+    text-align: left;
+    z-index: 1;
 
     @include global.max-width-query(tablet){
         width: 50%;
@@ -124,16 +123,24 @@
         transition: max-height 0.3s linear;
 
         @include global.min-width-query(tablet) {
-            &:nth-child(6n + 1) {
+            &:nth-child(6n + 1), 
+            .search-wrapper &:nth-child(5n + 1) {
                 flex-basis: 100%;
                 height: var(--contentHeight);
                 max-height: 0;
             }
-        
+               
             .item.expanded + &:nth-child(6n + 1), 
             .item.expanded + .item + &:nth-child(6n + 1), 
             .item.expanded + .item + & + .item + .item + &:nth-child(6n + 1), 
             .item.expanded + & + .item + .item + &:nth-child(6n + 1) {
+                max-height: var(--contentHeight);
+            }
+
+            .search-wrapper .item.expanded + &:nth-child(5n + 1), 
+            .search-wrapper .item.expanded + .item + &:nth-child(5n + 1), 
+            .search-wrapper .item.expanded + .item + & + .item + .item + &:nth-child(5n + 1), 
+            .search-wrapper .item.expanded + & + .item + .item + &:nth-child(5n + 1) {
                 max-height: var(--contentHeight);
             }
         }
@@ -161,11 +168,23 @@
         padding-bottom: calc(2 * var(--padding));
         border-bottom: solid 2px var(--main-color);
         margin-bottom: calc(2 * var(--padding));
+
+        @include global.max-width-query(small-tablet) {
+            font-size: calc(var(--fs) + 4px);
+        }
     }
 
     &-details {
         font-weight: 600;
         font-size: calc(var(--fs) + 4px);
+
+        @include global.max-width-query(small-tablet) {
+            font-size: var(--fs);
+        }
+
+        @include global.max-width-query(mobile) {
+            display: none;
+        }
     }
 
     &-content {
