@@ -41,18 +41,17 @@ NowPlaying: Handles the requests and the rendering of the HTML for the Now Playi
 
 ItemDetails: It is the class responsible for rendering content dynamically by fetching data each time a movie item is clicked. It also handles the active states of the items and some additional animations and functionality concerning the videos. A new instance is created every time a movie item is added inside the NowPlaying fetchMovies function.
 
-scrollObserver: 
+scrollObserver: The infinite scrolling requirement is fulfilled using the Intersection Observer API 
+After the data for a new "page" are loaded and added in the list, an empty element with class scroll-trigger is added on the wrapper.
+This element is then passed to the observer to being checked for intersecting. Since the observer is costly, performance-wise, the oberver uses the unobserve built-in method to stop checking for this element when the threshold is passed. It makes sense since we only need to trigger the load the end of the current list of results, so we only need one trigger at a time. Everything before that is already fetched and rendered. Two instances of this class are created. One for the homepage and the list of "Now Playing" movies and another one for the list created when searching. Depending on which one is used, in case of intersection the related method of each global instance (globalNowPlaying or globalSearchData) is called to load more data. 
+
+SearchData: Similar to NowPlaying. It uses the value of the search input to add a query parameter to the request. For each movie item added, a new instance of ItemDetails is created as well. It also uses the globalNowPlaying instanse and its hasScroll property to unobserve and reconnect the intersection observer related to the now playing list for performance reasons.
+
+FontAdjust: An additional experimental feature used to give the user the ability to adjust the web page's font size using the root's CSS variable for font size. 
 
 ----------------------------------------
 
 The Javascript file base.js is a generic one. It consists of some Event handlers, some basic if statements and code which is not necessarily associated to a component-like functionality. Depending on the time left at the end of this deadline, I plan on adding functionality to respect the user's preferences for reduced motion and theme preferences as well. 
-
-
-Infinite Scrolling
-
-The infinite scrolling requirement is fulfilled using the Intersection Observer API 
-After the data for a new "page" are loaded and added in the list, an empty element with class scroll-trigger is added on the wrapper.
-This element is then passed to the observer to being checked for intersecting. Since the observer is costly, performance-wise, the oberver uses the unobserve built-in method to stop checking for this element when the threshold is passed. It makes sense since we only need to trigger the load the end of the current list of results, so we only need one trigger at a time. Everything before that is already fetched and rendered. 
 
 Future improvements:
 
@@ -64,3 +63,8 @@ Future improvements:
 
 4. By making use of CSS variables, a "Settings" modal can be added on the page where the user can manipulate the page according to his liking and possible make it even more accessible by increasing/decreasing the font size vase (to be changed in the code to make use of the CSS variable) and possibly the color palette.
 
+TO DO until deadline:
+
+1. CSS Check mobile again in all devices and browsers
+2. HTML5 Validation
+3. Accessibility validation after fixes
