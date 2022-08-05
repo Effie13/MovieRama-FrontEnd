@@ -3,9 +3,6 @@
 
 <head>
     <script src="./src/js/scripts.min.js" defer></script>
-    <noscript>
-        Your browser does not support JavaScript!
-     </noscript>
     <meta charset="UTF-8">
     <title>MovieRama Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,19 +16,24 @@
         rel="stylesheet">
 </head>
 
-<body>
-    <header class="header">
-        <div class="wrapper header-wrapper flex">
-            <h1 title="MovieRama"><img alt="Movie icon" src="./src/assets/movie.png"><span>MovieRama</span></h1>
+<body class="light-theme">
+    <header class="header border-box">
+        <div class="header-wrapper flex">
+            <h1 title="MovieRama"><img alt="Movie icon" src="./src/assets/movie.png"><span class="absolute">MovieRama</span></h1>
             <div class="js-search">
                 <input class="js-search-input" type="text" placeholder="Looking for another movie?" />
+            </div>
+            <div class="js-adjust-font flex-column" data-min="13" data-max="18">
+                <button class="js-adjust-font-increase" aria-label="Increase base font size"></button>
+                <div>Aa</div>
+                <button class="js-adjust-font-decrease" aria-label="Decrease base font size"></button>
             </div>
         </div>
     </header>
     <main>
         <img src="" class="decor-img lazy-load" alt="" aria-hidden="true">
         <!-- TO DO: Add animation when items-wrapper changes-->
-        <div class="wrapper items-wrapper active">
+        <div class="wrapper items-wrapper loading active">
             <div class="items-title">
                 <h2>Now Playing</h2>
             </div>
@@ -39,20 +41,33 @@
                 Please enable JavaScript in your browser to use this website
             </noscript>
             <div class="items-list with-background flex js-now-playing"></div>
-            <!-- <div class="loader">
+            <div class="loader flex">
                 <span class="block"></span>
                 <span class="block"></span>
                 <span class="block"></span>
                 <span class="block"></span>
-            </div> -->
+            </div>
         </div>
         <div class="search-wrapper animated">
-            <div class="wrapper">
+            <div class="wrapper loading">
                 <div class="js-search-info relative">
-                <div>Results for: <span class="js-value"></span></div>
-                <button class="js-search-close absolute"></button>
+                    <div>Results for: <span class="js-value"></span></div>
+                    <button class="js-search-close"></button>
+                </div>
+                <div class="items-list flex js-search-list" data-message="No results found. Please try another search"></div>
+                <!-- Decorative element -->
+                <div class="fixed-gradient" aria-hidden="true">
+                    <span class="block animated"></span>
+                    <span class="block animated"></span>
+                    <span class="block animated"></span>
+                </div>
+                <div class="loader flex">
+                    <span class="block"></span>
+                    <span class="block"></span>
+                    <span class="block"></span>
+                    <span class="block"></span>
+                </div>
             </div>
-            <div class="items-list flex js-search-list"></div>
         </div>
         <!-- Decorative element -->
         <div class="fixed-gradient" aria-hidden="true">
@@ -62,7 +77,7 @@
         </div>
     </main>
     <footer class="footer">
-        <button class="js-info-trigger" style="background: url(./src/assets/info.svg) center center transparent;">Show
+        <button class="js-info-trigger">Show
             details</button>
         <div class="js-info-content rounded absolute smooth-medium">
             <h5 class="flex-column">

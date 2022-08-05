@@ -1,8 +1,7 @@
 @use "sass:map";
 
-// 
-$breakpoints: (laptop: 1560px, small-screen: 1280px, tablet: 1024px, small-tablet: 768px, mobile: 480px);
-$breakpointsMin: (laptop: 1561px, small-screen: 1281px, tablet: 1025px, small-tablet: 769px, mobile: 481px);
+$breakpoints: (laptop: 1560px, small-screen: 1280px, tablet: 1024px, small-tablet: 768px, mobile: 490px);
+$breakpointsMin: (laptop: 1561px, small-screen: 1281px, tablet: 1025px, small-tablet: 769px, mobile: 491px);
 
 @mixin max-width-query($mq-breakpoint, $mq-breakpoints: $breakpoints) {
     // If $mq-breakpoint is a key that exists in
@@ -26,4 +25,15 @@ $breakpointsMin: (laptop: 1561px, small-screen: 1281px, tablet: 1025px, small-ta
     @media screen and (min-width: #{$mq-breakpoint}) {
       @content;
     }
+}
+
+// Z-index layers
+$z-layers: (header: 1000, above: 100, default: 1);
+
+@function z-index($layers...) {
+	@if not map-has-key($z-layers, $layers...) {
+		@warn "No z-index layer found for `#{meta.inspect($layers...)}` in $z-layers map. Property omitted.";
+	}
+
+	@return map-get($z-layers, $layers...);
 }

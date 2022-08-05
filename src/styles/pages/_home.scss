@@ -1,3 +1,16 @@
+@use '../settings/variables' as global;
+
+:root {
+    --contentHeight: 400px;
+    @include global.max-width-query(small-screen) {
+        --contentHeight: 500px;
+    }
+
+    @include global.max-width-query(small-tablet) {
+        --contentHeight: 600px;
+    }
+}
+
 body {
     background-color: var(--background-color);
 }
@@ -15,7 +28,7 @@ main {
 }
 
 .wrapper {
-    max-width: 1460px;
+    max-width: var(--wrapperWidth);
     width: calc(100% - (2 * var(--padding)));
 
     main & {
@@ -67,9 +80,10 @@ main {
 .fixed-gradient {
     position: fixed;
     width: 100%;
-    bottom: 0;
+    top: 0;
     left: 0;
-    z-index: 0;
+    z-index: -1;
+    height: var(--screenHeight);
 
     span {
         position: absolute;
@@ -79,7 +93,7 @@ main {
 
         &:nth-child(1) {
             width: 40vw;
-            height: 20vh;
+            height: 25vh;
             bottom: 30vh;
             left: 20%;
             background-color: var(--accent-color);
@@ -92,7 +106,7 @@ main {
             bottom: 0;
             left: 45%;
             background-color: aqua;
-            animation: move1 30s cubic-bezier(0.39, 0.575, 0.565, 1) infinite alternate-reverse;
+            animation: move2 20s cubic-bezier(0.39, 0.575, 0.565, 1) infinite alternate-reverse;
         }
 
         &:nth-child(3) {
@@ -101,6 +115,7 @@ main {
             bottom: 40vh;
             left: 70%;
             background-color: blueviolet;
+            animation: move1 8s ease-in-out infinite alternate-reverse;
         }
     }
 }
@@ -108,17 +123,21 @@ main {
 /* Typography */
 
 h2 {
-    font-size: 32px;
+    font-size: calc(var(--fs) + 18px);
     margin-bottom: calc(2 * var(--padding));
+
+    @include global.max-width-query(mobile) {
+        font-size: calc(var(--fs) + 12px);
+    }
 }
 
 h4 {
-    font-size: 28px;
+    font-size: calc(var(--fs) + 14px);
     margin-bottom: var(--padding);
 }
 
 h5 {
-    font-size: 18px;
+    font-size: calc(var(--fs) + 4px);
 }
 
 // Decorative Image
@@ -160,5 +179,93 @@ img.lazy-load {
 
     &::-webkit-scrollbar-track {
         background: rgba(0,0,0,0.15);
+    }
+}
+
+*:focus {
+    outline: 2px dashed white;
+    outline-offset: 1px;
+}
+
+.js-adjust-font {
+    position: fixed;
+    position: fixed;
+    right: calc(2 * var(--padding));
+    top: calc(var(--headerHeight) + 2 * var(--padding));
+
+    @include global.max-width-query(small-tablet) {
+        display: none;
+    }
+
+    > * {
+        background: transparent;
+        width: 22px;
+        height: 22px;
+    }
+
+    button {
+        position: relative;
+
+        &.disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        &:before, 
+        &:after{
+            position: absolute;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        &:before {
+            content: '';
+            left: 0;
+            top: 10px;
+            height: 2px;
+            width: 100%;
+        }
+
+        &:hover {
+            &:before, 
+            &:after{
+                background-color: var(--accent-color);
+            }
+        }
+    }
+
+    div {
+        font-size: calc(var(--fs) + 2px);
+        margin: calc( 2 * var(--padding)) 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &-increase {
+        &:after {
+            content: '';
+            width: 2px;
+            height: 100%;
+            top: 0;
+            left: 10px;
+        }
+    }
+}
+
+.error-message {
+    color: white;
+    font-size: calc(var(--fs) + 3px);
+}
+
+.mobile-only {
+    @include global.min-width-query(mobile) {
+        display: none;
+    }
+}
+
+.desktop-only {
+    @include global.max-width-query(tablet) {
+        display: none;
     }
 }

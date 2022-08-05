@@ -10,15 +10,12 @@ class ScrollObserver {
             threshold: 0
         };
 
-        console.log(this.element);
-
         this.observer;
         this.init();
     }
 
     init() {
         const nowplaying = this.element.classList.contains('js-now-playing');
-        console.log(nowplaying);
         
         this.observer = new IntersectionObserver((entries, self) => {
             entries.forEach(entry => {
@@ -36,7 +33,6 @@ class ScrollObserver {
 
     updateTrigger() {
         this.trigger = this.element.querySelector('.scroll-trigger:last-child');
-        console.log(this.trigger);
         this.runObserve();
     }
 

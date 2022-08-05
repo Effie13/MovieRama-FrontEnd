@@ -10,6 +10,7 @@
   --text-color: #FF9677;
   --background-color: #180C38;
   --padding: 8px;
+  --wrapperWidth: 1460px;
 }
 
 html, body, button, input, option, select, textarea {
@@ -43,9 +44,9 @@ html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pr
   padding: 0;
 }
   
-a:active, a:focus, a:hover, button, input:focus {
-  outline: 0;
-}
+// a:active, a:focus, a:hover, button, input:focus {
+//   outline: 0;
+// }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
   display: block
@@ -287,4 +288,25 @@ section, %section, .section {
   transition: all .8s ease 0s;
 }
 
+.reduced-motion * {
+  transition: none !important;
+}
 
+a:not([class]) {
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: all 0.3s ease-out;
+    width: 0;
+  }
+
+  &:hover:after {
+    width: 100%;
+  }
+}
