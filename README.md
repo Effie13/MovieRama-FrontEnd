@@ -68,3 +68,4 @@ TO DO until deadline:
 1. CSS Check mobile again in all devices and browsers
 2. HTML5 Validation
 3. Accessibility validation after fixes
+4. Fix background on search modal infinite scrolling
