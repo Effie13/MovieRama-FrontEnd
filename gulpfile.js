@@ -43,7 +43,7 @@ gulp.task('scripts', function() {
         .pipe(concat('scripts.js'))
         .pipe(gulp.dest(jsDest))
         .pipe(rename('scripts.min.js'))
-        .pipe(uglify())
+        //.pipe(uglify())
         .pipe(gulp.dest(jsDest));
 });
 

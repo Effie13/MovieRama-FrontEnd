@@ -124,7 +124,7 @@
 
         @include global.min-width-query(tablet) {
             &:nth-child(6n + 1), 
-            .search-wrapper &:nth-child(5n + 1) {
+            .search-wrapper &:nth-child(6n) {
                 flex-basis: 100%;
                 height: var(--contentHeight);
                 max-height: 0;
@@ -137,10 +137,10 @@
                 max-height: var(--contentHeight);
             }
 
-            .search-wrapper .item.expanded + &:nth-child(5n + 1), 
-            .search-wrapper .item.expanded + .item + &:nth-child(5n + 1), 
-            .search-wrapper .item.expanded + .item + & + .item + .item + &:nth-child(5n + 1), 
-            .search-wrapper .item.expanded + & + .item + .item + &:nth-child(5n + 1) {
+            .search-wrapper .item.expanded + &:nth-child(6n), 
+            .search-wrapper .item.expanded + .item + &:nth-child(6n), 
+            .search-wrapper .item.expanded + .item + & + .item + .item + &:nth-child(6n), 
+            .search-wrapper .item.expanded + & + .item + .item + &:nth-child(6n) {
                 max-height: var(--contentHeight);
             }
         }

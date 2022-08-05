@@ -761,9 +761,15 @@ class SearchData {
         this.otherWrapper.classList.add('active');
         this.otherWrapper.removeAttribute('hidden');
         //this.wrapper.style.position = '';
-        this.wrapper.style.display = 'none';
-        this.wrapper.classList.remove('searching');
-        this.wrapper.style = '';
+        new Promise( () => {
+            this.wrapper.style.display = 'none';
+        }).then( () => {
+            this.wrapper.classList.remove('searching');
+            this.wrapper.style = '';
+        });
+        //this.wrapper.style.display = 'none';
+        // this.wrapper.classList.remove('searching');
+        // this.wrapper.style = '';
         this.list.parentNode.classList.add('loading');
         //this.wrapper.addEventListener('transitionend', () => {
         //this.otherWrapper.classList.add('active');
