@@ -21,6 +21,7 @@ Make sure you have Express or follow the directions (https://expressjs.com/en/st
 To start the project: 
 
 When in CMD, type
+    npm install (to install node modules, not included due to size)
     npm run dev 
 
 This runs node ./index.js simultaneously with some gulp tasks to watch for changes in JS and SCSS files, so that they are recompiled in real time if needed. 
