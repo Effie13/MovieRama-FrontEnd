@@ -2,7 +2,7 @@
 
 Front End Assignment 
 
-The objective is to build a small project named MovieRama. The application is a movie catalog where users can check the movies of the week, search for movies and view details about them. The project doesn't have any backend parts but instead will relies on The Movie DB (MDB) JSON API (https://developers.themoviedb.org/3/getting-started) for a data source. MovieRama is a client-side only - single page application.
+The objective is to build a small project named Movierama. The application is a movie catalog where users can check the movies of the week, search for movies and view details about them. The project doesn't have any backend parts but instead relies on The Movie DB (MDB) JSON API (https://developers.themoviedb.org/3/getting-started) for a data source. Movierama is a client-side only - single page application.
 
 Basic requirements are:
 - Users should be able to browse through the movies of the week using infinite scrolling
@@ -64,9 +64,12 @@ Future improvements:
 
 4. By making use of CSS variables, a "Settings" modal can be added on the page where the user can manipulate the page according to his liking and possible make it even more accessible by increasing/decreasing the font size vase (to be changed in the code to make use of the CSS variable) and possibly the color palette.
 
-TO DO until deadline:
+TO DO:
 
 1. CSS Check mobile again in all devices and browsers
 2. HTML5 Validation
-3. Accessibility validation after fixes
+3. Accessibility validation
 4. Fix background on search modal infinite scrolling
+5. Change modules
+6. Add testing
+7. Switch from Gulp to Webpack
