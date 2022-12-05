@@ -188,3 +188,5 @@ class ItemDetails {
         this.activeDecor.classList.remove('ready');
     }
 }
+
+export default ItemDetails;

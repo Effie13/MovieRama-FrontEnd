@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "scss": "gulp watch",
     "js": "gulp watchJs",
-    "dev": "npm-run-all --parallel start js scss"
+    "dev": "npm-run-all --parallel start scss"
   },
   "repository": {
     "type": "git",

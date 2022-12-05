@@ -2,7 +2,7 @@
 <html lang="en-US">
 
 <head>
-    <script src="./src/js/scripts.min.js" defer></script>
+    <script type="module" src="./src/js/scripts.js"></script><!-- defer -->
     <meta charset="UTF-8">
     <title>MovieRama Project</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,8 @@
 <body class="light-theme">
     <header class="header border-box">
         <div class="header-wrapper flex">
-            <h1 title="MovieRama"><img alt="Movie icon" src="./src/assets/movie.png"><span class="absolute">MovieRama</span></h1>
+            <h1 title="MovieRama"><img alt="Movie icon" src="./src/assets/movie.png"><span
+                    class="absolute">MovieRama</span></h1>
             <div class="js-search">
                 <input class="js-search-input" type="text" placeholder="Looking for another movie?" />
             </div>
@@ -54,7 +55,8 @@
                     <div>Results for: <span class="js-value"></span></div>
                     <button class="js-search-close"></button>
                 </div>
-                <div class="items-list flex js-search-list" data-message="No results found. Please try another search"></div>
+                <div class="items-list flex js-search-list" data-message="No results found. Please try another search">
+                </div>
                 <!-- Decorative element -->
                 <div class="fixed-gradient" aria-hidden="true">
                     <span class="block animated"></span>

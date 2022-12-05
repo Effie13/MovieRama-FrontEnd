@@ -1,3 +1,6 @@
+import ItemDetails from "../ItemDetails/index.js";
+import ScrollObserver from "../ScrollObserver/index.js";
+
 class SearchData {
     constructor() {
         this.list = document.querySelector('.js-search-list');
@@ -47,75 +50,6 @@ class SearchData {
         this.page += 1;
 
         const request = new Request(this.endpoint + this.page + '&query=' + encodeURI(this.value));
-
-        // The commented code below is still in progress
-
-        // async function movies() {
-        //     return this.request = await fetch(request, { signal });
-        // };
-
-        // movies().then((response) => response.json())
-        // .then((response) => {
-
-        //     this.list.parentNode.classList.remove('loading');
-
-        //     if (this.page == 1) {
-        //         this.totalPages = response.total_pages;
-        //     }
-
-        //     if (response.results.length) {
-        //         response.results.forEach((e, i) => {
-        //             let genres = '';
-        //             if (genresArray) {
-        //                 e.genre_ids.forEach(e => {
-        //                     genres += genresArray.find(item => item.id === e).name + ' ';
-        //                 });
-        //             } else {
-        //                 // In case the genres request is not succesful and we cannot match genre id with genre name just display a list of ids
-        //                 genres = JSON.stringify(e.genre_ids);
-        //             }
-
-        //             const element = this.item(e.id, e.title, e.poster_path, e.release_date, genres, e.vote_average);
-        //             this.list.append(element);
-        //             if ( (i+1) % 2 == 0) {
-        //                 this.list.append(this.dummyElement.cloneNode());
-        //             }
-        //             new ItemDetails(element);
-        //         });
-        //         this.list.append(scrollTrigger);
-        //     } else {
-        //         // response.results.length == 0
-        //         this.list.classList.add('empty');
-        //         this.hasScroll = false;
-        //         this.scrollObserver.remove();
-        //         this.request = undefined;
-        //         return;
-        //     }
-
-        //     if (this.totalPages > 1 && !this.hasScroll) {
-        //         // Inititate Infinite Scrolling
-        //         this.scrollObserver = new ScrollObserver(this.list);
-        //         this.hasScroll = true;
-        //     } else if (this.hasScroll) {
-        //         this.scrollObserver.updateTrigger();
-        //     }
-
-        //     if (this.totalPages == this.page && this.hasScroll) {
-        //         this.scrollObserver.remove();
-        //     }
-
-        //     this.request = undefined;
-        // })
-        // .catch((error) => {
-        //     if (this.list.innerHTML == '') {
-        //         this.list.parentNode.classList.remove('loading');
-        //         const errorItem = document.createElement('div');
-        //         errorItem.classList = 'error-message';
-        //         errorItem.innerHTML = `Error during the fetch request while searching.`;
-        //         this.list.append(errorItem);
-        //     }
-        //     console.log(error.stack);
-        // });
 
         this.request = fetch(request, { signal })
             .then((response) => response.json())
@@ -233,20 +167,13 @@ class SearchData {
         this.otherWrapper.classList.add('active');
         this.otherWrapper.removeAttribute('hidden');
         //this.wrapper.style.position = '';
-        new Promise( () => {
+        new Promise(() => {
             this.wrapper.style.display = 'none';
-        }).then( () => {
+        }).then(() => {
             this.wrapper.classList.remove('searching');
             this.wrapper.style = '';
         });
-        //this.wrapper.style.display = 'none';
-        // this.wrapper.classList.remove('searching');
-        // this.wrapper.style = '';
         this.list.parentNode.classList.add('loading');
-        //this.wrapper.addEventListener('transitionend', () => {
-        //this.otherWrapper.classList.add('active');
-        // this.otherWrapper.removeAttribute('hidden');
-        //}, {once: true});
     }
 
     item(id, title, poster = undefined, release_date = undefined, genres = undefined, vote_average = undefined, overview = undefined) {
@@ -288,4 +215,4 @@ class SearchData {
     }
 }
 
-const globalSearchData = new SearchData();
+export default SearchData;

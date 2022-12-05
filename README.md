@@ -73,3 +73,4 @@ TO DO:
 5. Change modules
 6. Add testing
 7. Switch from Gulp to Webpack
+8. Store API_KEY and API_PATH constants ?

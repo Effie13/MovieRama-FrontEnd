@@ -1,9 +1,18 @@
-const API_KEY = '?api_key=15d382b5ad53d6b7c9569e8b85954ffa';
-const API_PATH = 'https://api.themoviedb.org/3/';
+import FontAdjust from "./components/FontAdjust/index.js";
+import NowPlaying from "./components/NowPlaying/index.js";
+import SearchData from "./components/SearchData/index.js";
+
+// API_KEY and API_PATH to be stored in cookies?
+window.API_KEY = '?api_key=15d382b5ad53d6b7c9569e8b85954ffa';
+window.API_PATH = 'https://api.themoviedb.org/3/';
 const body = document.body;
 const header = document.querySelector('header');
 let mobile = false;
-let genresArray = undefined;
+window.genresArray = undefined;
+
+window.globalSearchData = new SearchData();
+window.globalNowPlaying = new NowPlaying();
+const globalFontAdjust = new FontAdjust();
 
 // Add basic functionality to make the website more accessible and respect the user's preferences in design
 // I plan on using these css classes in the next stages of developmen, after having finished the JS functionality requirements 

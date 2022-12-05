@@ -20,13 +20,13 @@ class FontAdjust {
     }
 
     decrease() {
-        this.base -=1;
+        this.base -= 1;
         this.setVariable(this.base);
         this.checkValue();
     }
 
     increase() {
-        this.base +=1;
+        this.base += 1;
         this.setVariable(this.base);
         this.checkValue();
     }
@@ -36,5 +36,4 @@ class FontAdjust {
         this.base == this.min ? this.down.classList.add('disabled') : this.down.classList.remove('disabled')
     }
 }
-
-const globalFontAdjust = new FontAdjust();
+export default FontAdjust;
