@@ -1,6 +1,4 @@
-# MovieRama-FrontEnd
-
-Front End Assignment 
+# [WIP] Movie App-FrontEnd 
 
 The objective is to build a small project named Movierama. The application is a movie catalog where users can check the movies of the week, search for movies and view details about them. The project doesn't have any backend parts but instead relies on The Movie DB (MDB) JSON API (https://developers.themoviedb.org/3/getting-started) for a data source. Movierama is a client-side only - single page application.
 
@@ -63,14 +61,3 @@ Future improvements:
 3. Make SCSS files more versatile by adding mixins and map for handling different breakpoints. Also it is necessary to write some SCSS functions to generate some utility classes for margins, paddings, borders etc since those properties are used quite often. 
 
 4. By making use of CSS variables, a "Settings" modal can be added on the page where the user can manipulate the page according to his liking and possible make it even more accessible by increasing/decreasing the font size vase (to be changed in the code to make use of the CSS variable) and possibly the color palette.
-
-TO DO:
-
-1. CSS Check mobile again in all devices and browsers
-2. HTML5 Validation
-3. Accessibility validation
-4. Fix background on search modal infinite scrolling
-5. Change modules
-6. Add testing
-7. Switch from Gulp to Webpack
-8. Store API_KEY and API_PATH constants ?
