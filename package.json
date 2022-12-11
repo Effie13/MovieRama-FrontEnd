@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Effie13/MovieRama-FrontEnd.git"
+    "url": "git+https://github.com/effiepitaouli-dev/Movie-app.git"
   },
   "author": "Effie Pitaouli",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Effie13/MovieRama-FrontEnd/issues"
+    "url": "https://github.com/effiepitaouli-dev/Movie-app/issues"
   },
-  "homepage": "https://github.com/Effie13/MovieRama-FrontEnd#readme",
+  "homepage": "https://github.com/effiepitaouli-dev/Movie-app#readme",
   "dependencies": {
     "express": "^4.18.1"
   },
