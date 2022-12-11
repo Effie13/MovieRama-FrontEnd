@@ -1,6 +1,6 @@
 class FontAdjust {
-    constructor() {
-        this.parent = document.querySelector('.js-adjust-font');
+    constructor(element) {
+        this.parent = element;
         this.up = this.parent.querySelector('.js-adjust-font-increase');
         this.down = this.parent.querySelector('.js-adjust-font-decrease');
         this.max = parseInt(this.parent.getAttribute('data-max'));

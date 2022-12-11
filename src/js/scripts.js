@@ -10,9 +10,14 @@ const header = document.querySelector('header');
 let mobile = false;
 window.genresArray = undefined;
 
-window.globalSearchData = new SearchData();
-window.globalNowPlaying = new NowPlaying();
-const globalFontAdjust = new FontAdjust();
+const search = document.querySelector('.js-search-list');
+if (search) window.globalSearchData = new SearchData(search);
+
+const nowPlaying = document.querySelector('.js-now-playing');
+if (nowPlaying) window.globalNowPlaying = new NowPlaying(nowPlaying);
+
+const fontAdjust = document.querySelector('.js-adjust-font');
+if (fontAdjust) new FontAdjust(fontAdjust);
 
 // Add basic functionality to make the website more accessible and respect the user's preferences in design
 // I plan on using these css classes in the next stages of developmen, after having finished the JS functionality requirements 

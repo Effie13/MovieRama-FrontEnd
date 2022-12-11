@@ -2,8 +2,8 @@ import ItemDetails from "../ItemDetails/index.js";
 import ScrollObserver from "../ScrollObserver/index.js";
 
 class SearchData {
-    constructor() {
-        this.list = document.querySelector('.js-search-list');
+    constructor(element) {
+        this.list = element;
         this.wrapper = this.list.parentNode.parentNode;
         this.input = document.querySelector('.js-search-input');
         this.endpoint = `${API_PATH}search/movie${API_KEY}&include_adult=false&page=`;

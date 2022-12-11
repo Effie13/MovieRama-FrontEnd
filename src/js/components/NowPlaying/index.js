@@ -2,12 +2,12 @@ import ItemDetails from "../ItemDetails/index.js";
 import ScrollObserver from "../ScrollObserver/index.js";
 
 class NowPlaying {
-    constructor() {
+    constructor(element) {
+        this.wrapper = element
         this.endpont = 'movie/now_playing';
         this.now_playing = `${API_PATH}${this.endpont}${API_KEY}&page=1`;
         this.genres = `${API_PATH}genre/movie/list${API_KEY}`;
         this.totalPages = 0;
-        this.wrapper = document.querySelector('.js-now-playing');
         this.genresArray = undefined;
         this.hasScroll = false;
         this.dummyElement = document.createElement('div');

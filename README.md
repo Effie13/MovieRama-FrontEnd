@@ -1,4 +1,4 @@
-# MovieRama-FrontEnd
+# Movie app-FrontEnd
 
 Front End Assignment 
 
